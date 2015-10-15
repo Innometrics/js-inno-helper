@@ -63,4 +63,4 @@ gulp.task('watch', function () {
     gulp.watch(paths.scss, ['scss']);
 });
 
-gulp.task('default', ['js:normal', 'js:min', 'js:lint', 'scss', 'watch']);
+gulp.task('default', ['js:normal', 'js:min', 'js:lint', 'scss']);
