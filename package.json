@@ -8,9 +8,9 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "npm prune",
-    "start": "node_modules/gulp/bin/gulp.js",
-    "test": "mocha -R spec ./test/*.js",
-    "cov": "node node_modules/istanbul/lib/cli.js cover _mocha -- -R spec ./test/*.js"
+    "start": "gulp",
+    "test": "mocha -R spec",
+    "test-cov": "istanbul cover _mocha -- -R spec"
   },
   "engines": {},
   "engine-strict": true,
