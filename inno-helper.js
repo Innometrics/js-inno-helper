@@ -1,6 +1,6 @@
 /* @version 0.0.1 */
 
-/*global $:false, Request*/
+/*global $, Request*/
 /*exported Loader */
 
 var Loader = (function () {
