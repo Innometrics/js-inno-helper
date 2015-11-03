@@ -9,7 +9,8 @@
   "scripts": {
     "prepublish": "npm prune",
     "start": "gulp",
-    "test": "mocha -R spec",
+    "test-local": "gulp test:local",
+    "test-remote": "gulp test:remote",
     "test-cov": "istanbul cover _mocha -- -R spec"
   },
   "engines": {},
@@ -30,7 +31,14 @@
     "gulp-version-filename": "^1.0.2",
     "istanbul": "^0.4.0",
     "jquery": "^2.1.4",
+    "karma": "^0.13.15",
+    "karma-browserstack-launcher": "^0.1.6",
+    "karma-coverage": "^0.5.3",
+    "karma-mocha": "^0.2.0",
+    "karma-phantomjs-launcher": "^0.2.1",
     "mocha": "^2.3.3",
+    "phantomjs": "^1.9.18",
+    "phantomjs-polyfill": "0.0.1",
     "sinon": "^1.17.2"
   }
 }

@@ -1,8 +1,7 @@
 /* global describe, it, chai, beforeEach, afterEach, IframeHelper, sinon */
+var assert = chai.assert;
 
 describe('inno helper', function () {
-    var assert = chai.assert;
-
     var inno;
     beforeEach(function () {
         inno = new IframeHelper();
