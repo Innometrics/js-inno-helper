@@ -7,7 +7,8 @@ module.exports = function (config) {
             'inno-helper.js',
             'node_modules/chai/chai.js',
             'node_modules/sinon/pkg/sinon.js',
-            'node_modules/test/phantomjs-polyfill.js',
+            'node_modules/jquery/dist/jquery.min.js',
+            'test/phantomjs-polyfill.js',
             'test/*.js'
         ],
         plugins: [

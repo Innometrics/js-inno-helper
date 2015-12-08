@@ -53,7 +53,7 @@ var fixtures = {
     }
 };
 
-describe('inno helper', function () {
+describe('InnoHelper', function () {
     var inno;
     beforeEach(function () {
         inno = new IframeHelper();
