@@ -1,13 +1,13 @@
 module.exports = function (config) {
     config.set({
-        basePath: './',
+        basePath: '../',
         autoWatch: true,
         frameworks: ['mocha'],
         files: [
             'inno-helper.js',
             'node_modules/chai/chai.js',
             'node_modules/sinon/pkg/sinon.js',
-            'node_modules/phantomjs-polyfill/bind-polyfill.js',
+            'node_modules/test/phantomjs-polyfill.js',
             'test/*.js'
         ],
         plugins: [

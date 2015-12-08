@@ -33,6 +33,21 @@ var fixtures = {
                 origin: 'APP',
                 accepted: true,
                 modifiedAt: 1422010460676
+            },
+            'sessions.android.mouse.events.load': {
+                origin: 'APP',
+                accepted: true,
+                modifiedAt: 1422010460676
+            },
+            'attributes.android.mouse.data.data1': {
+                origin: 'APP',
+                accepted: true,
+                modifiedAt: 1422010460676
+            },
+            'sessions.android.mouse.events.load.data.data1': {
+                origin: 'APP',
+                accepted: true,
+                modifiedAt: 1422010460676
             }
         }
     }
@@ -83,6 +98,84 @@ describe('inno helper', function () {
             });
             inno.getProfileSchemaSessionDatas('android', 'mouse', function (data) {
                 assert.deepEqual(data, ['data1'], 'wrong profile schema session datas');
+                done();
+            });
+        });
+    });
+
+    it('can be get profile schema event definitions', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.onReady(function () {
+            inno.pm.sendMessage.restore();
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures.profileSchema);
+            });
+            inno.getProfileSchemaEventDefinitions(function (data) {
+                assert.deepEqual(data, ['android/mouse/load'], 'wrong profile schema event definitions');
+                done();
+            });
+        });
+    });
+
+    it('can be get profile schema attributes', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.onReady(function () {
+            inno.pm.sendMessage.restore();
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures.profileSchema);
+            });
+            inno.getProfileSchemaAttributes(function (data) {
+                assert.deepEqual(data, ['android/mouse/data1'], 'wrong profile schema attributes');
+                done();
+            });
+        });
+    });
+
+    it('can be get profile schema event definition datas', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.onReady(function () {
+            inno.pm.sendMessage.restore();
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures.profileSchema);
+            });
+            inno.getProfileSchemaEventDefinitionDatas('android', 'mouse', 'load', function (data) {
+                assert.deepEqual(data, ['data1'], 'wrong profile schema event definition datas');
+                done();
+            });
+        });
+    });
+
+    var methodsPart1 = ['getProperties', 'getWidgetSettings', 'removeProperties', 'getEventListeners', 'getRules', 'getSectionsFullList'];
+
+    methodsPart1.map(function (item) {
+        it('can be use ' + item, function (done) {
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures);
+            });
+            inno[item](function (ok, data) {
+                assert.strictEqual(ok, true);
+                assert.strictEqual(typeof data, 'object');
+                done();
+            });
+        });
+    });
+
+    var methodsPart2 = ['setProperties', 'setWidgetSettings', 'getProperty', 'removeProperty', 'removeEventListener', 'addEventListener', 'setRules', 'setRules', 'addLogMessage'];
+
+    methodsPart2.map(function (item) {
+        it('can be use ' + item, function (done) {
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures);
+            });
+            inno[item]('value', function (ok, data) {
+                assert.strictEqual(ok, true);
+                assert.strictEqual(typeof data, 'object');
                 done();
             });
         });

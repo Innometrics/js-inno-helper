@@ -61,14 +61,14 @@ gulp.task('scss', function () {
 
 gulp.task('test:local', function (done) {
     new Server({
-        configFile: __dirname + '/karma.local.conf.js',
+        configFile: __dirname + '/config/karma.local.conf.js',
         singleRun: true
     }, done).start();
 });
 
 gulp.task('test:remote', function (done) {
     new Server({
-        configFile: __dirname + '/karma.remote.conf.js',
+        configFile: __dirname + '/config/karma.remote.conf.js',
         singleRun: true
     }, done).start();
 });

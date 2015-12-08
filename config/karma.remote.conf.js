@@ -17,6 +17,7 @@ for (var i = 0; i < list.length; i++) {
 
 module.exports = function (config) {
     config.set({
+        basePath: '../',
         frameworks: ['mocha'],
         files: [
             'inno-helper.js',

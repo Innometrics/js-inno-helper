@@ -12,11 +12,15 @@
         <script src="../node_modules/chai/chai.js"></script>
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/sinon/pkg/sinon.js"></script>
+        <script src="../node_modules/async/dist/async.min.js"></script>
 
         <script>
             mocha.setup('bdd');
         </script>
         <script src="inno-helper.js"></script>
+        <script src="loader.js"></script>
+        <script src="post-messenger.js"></script>
+        <script src="proxy.js"></script>
         <script>
             mocha.checkLeaks();
             mocha.globals(['jQuery']);
