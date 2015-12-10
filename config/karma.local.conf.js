@@ -2,6 +2,7 @@ module.exports = function (config) {
     config.set({
         basePath: '../',
         autoWatch: true,
+        singleRun: true,
         frameworks: ['mocha'],
         files: [
             'inno-helper.js',
@@ -22,7 +23,6 @@ module.exports = function (config) {
         preprocessors: {
             'inno-helper.js': ['coverage']
         },
-        singleRun: true,
         coverageReporter: {
             dir: 'coverage/',
             reporters: [{
