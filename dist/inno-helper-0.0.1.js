@@ -1,12 +1,10 @@
 /* @version 0.0.1 */
 
-/*global $:false, Request*/
-/*exported Loader */
+/* global $, Request */
+/* exported Loader */
 
 var Loader = (function () {
-
     var spinner = null;
-
     var init = function () {
         $('body').append('<div id="inno-loader" style="display: none;"><div class="overlay"></div><div class="spinner"></div></div>');
         spinner = $('#inno-loader');
@@ -25,7 +23,6 @@ var Loader = (function () {
             }
         }
     };
-
 })();
 
 
@@ -34,16 +31,16 @@ var Loader = (function () {
  * Class for communicate with parent frame
  */
 var PostMessenger = function () {
+    var handler = this.messageHandler.bind(this);
     this.messageStack = {};
     if (window.addEventListener) {
-        window.addEventListener('message', this.messageHandler.bind(this));
+        window.addEventListener('message', handler);
     } else {
-        window.attachEvent('onmessage', this.messageHandler.bind(this));
+        window.attachEvent('onmessage', handler);
     }
 };
 
 PostMessenger.prototype = {
-
     /* *
      * @param {String} message
      * @private
@@ -70,7 +67,7 @@ PostMessenger.prototype = {
      * @return {String} Generated unique ID
      */
     getUniqId: function () {
-        return Math.round((Date.now() + window.performance.now()) * 1000);
+        return Math.round((Date.now() + window.performance.now()) * Math.random() * 1000);
     },
 
     /* *
@@ -165,7 +162,6 @@ var IframeHelper = function () {
     this.currentData = null;
     this.profileSchemaData = null;
 
-    // this.loadCurrentData();
     setTimeout(this.loadCurrentData.bind(this), 0);
 };
 
@@ -433,7 +429,7 @@ IframeHelper.prototype = {
      * Remove all properties in current app
      * @param {Function} callback Callback function to be called when request done
      * @param {Boolean} callback.status True if request succeed
-    */
+     */
     removeProperties: function (callback) {
         this.request('app.settings;delete', callback);
     },
@@ -781,8 +777,7 @@ IframeHelper.prototype = {
 
                     if (url !== params.url) {
                         params = new Request(
-                            url,
-                            {
+                            url, {
                                 method: params.method,
                                 headers: params.headers,
                                 mode: params.mode
