@@ -31,11 +31,12 @@ var Loader = (function () {
  * Class for communicate with parent frame
  */
 var PostMessenger = function () {
+    var handler = this.messageHandler.bind(this);
     this.messageStack = {};
     if (window.addEventListener) {
-        window.addEventListener('message', this.messageHandler.bind(this));
+        window.addEventListener('message', handler);
     } else {
-        window.attachEvent('onmessage', this.messageHandler.bind(this));
+        window.attachEvent('onmessage', handler);
     }
 };
 
@@ -66,7 +67,7 @@ PostMessenger.prototype = {
      * @return {String} Generated unique ID
      */
     getUniqId: function () {
-        return Math.round((Date.now() + window.performance.now()) * 1000);
+        return Math.round((Date.now() + window.performance.now()) * Math.random() * 1000);
     },
 
     /* *

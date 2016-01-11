@@ -6,13 +6,23 @@ describe('PostMessenger', function () {
     var pm;
 
     describe('for listen event "message"', function () {
+        var addEventListener,
+            attachEvent;
+
+        before(function () {
+            addEventListener = window.addEventListener;
+            attachEvent = window.attachEvent;
+        });
+
+        afterEach(function () {
+            window.addEventListener = addEventListener;
+            window.attachEvent = attachEvent;
+        });
 
         it('should use addEventListener', function () {
-            var addEventListener = window.addEventListener;
             window.addEventListener = window.addEventListener || function () {};
             sinon.spy(window, 'addEventListener');
 
-            var attachEvent = window.attachEvent;
             window.attachEvent = window.attachEvent || function () {};
             sinon.spy(window, 'attachEvent');
 
@@ -20,25 +30,17 @@ describe('PostMessenger', function () {
             assert.ok(window.addEventListener.calledOnce);
             assert.ok(window.addEventListener.calledWith('message'));
             assert.isNotOk(window.attachEvent.called);
-
-            window.addEventListener = addEventListener;
-            window.attachEvent = attachEvent;
         });
 
         it('should use attachEvent', function () {
-            var addEventListener = window.addEventListener;
-            window.addEventListener = null;
+            window.addEventListener = void(0);
 
-            var attachEvent = window.attachEvent;
-            window.attachEvent = window.attachEvent || function () {};
-            sinon.spy(window, 'attachEvent');
+            window.attachEvent = function () {};
+            sinon.stub(window, 'attachEvent');
 
             pm = new PostMessenger();
             assert.ok(window.attachEvent.calledOnce);
             assert.ok(window.attachEvent.calledWith('onmessage'));
-
-            window.addEventListener = addEventListener;
-            window.attachEvent = attachEvent;
         });
 
     });
@@ -88,19 +90,6 @@ describe('PostMessenger', function () {
             assert.ok(pm.messageStack['some id'].calledWith('success', 'my message'));
 
         });
-    });
-
-    it('should generate uniq id', function () {
-        var ids = {}, id,
-            l = 1000;
-
-        pm = new PostMessenger();
-
-        while (l--) {
-            id = pm.getUniqId();
-            assert.isNotOk(id in ids);
-            ids[id] = true;
-        }
     });
 
     describe('message sending', function () {
@@ -173,6 +162,23 @@ describe('PostMessenger', function () {
 
             assert.ok(window.parent.postMessage.calledWith(message, '*'));
             window.parent.postMessage.restore();
+        });
+
+    });
+
+    describe('utils', function () {
+
+        it('should generate uniq id', function () {
+            var ids = {}, id,
+                l = 1000;
+
+            pm = new PostMessenger();
+
+            while (l--) {
+                id = pm.getUniqId();
+                assert.isNotOk(id in ids);
+                ids[id] = true;
+            }
         });
 
     });
