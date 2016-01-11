@@ -9,6 +9,7 @@ var jscs = require('gulp-jscs');
 var jshint = require('gulp-jshint');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
+var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
 
 function errorHandler (error) {
@@ -56,6 +57,24 @@ gulp.task('scss', function () {
         .pipe(base64().on('error', errorHandler))
         .pipe(csso().on('error', errorHandler))
         .pipe(gulp.dest('dist'));
+});
+
+gulp.task('test:local', function (done) {
+    new Server({
+        configFile: __dirname + '/config/karma.local.conf.js'
+    }, done).start();
+});
+
+gulp.task('test:local-manual', function (done) {
+    new Server({
+        configFile: __dirname + '/config/karma.local-manual.conf.js'
+    }, done).start();
+});
+
+gulp.task('test:remote', function (done) {
+    new Server({
+        configFile: __dirname + '/config/karma.remote.conf.js'
+    }, done).start();
 });
 
 gulp.task('watch', function () {
