@@ -65,6 +65,12 @@ gulp.task('test:local', function (done) {
     }, done).start();
 });
 
+gulp.task('test:local-manual', function (done) {
+    new Server({
+        configFile: __dirname + '/config/karma.local-manual.conf.js'
+    }, done).start();
+});
+
 gulp.task('test:remote', function (done) {
     new Server({
         configFile: __dirname + '/config/karma.remote.conf.js'

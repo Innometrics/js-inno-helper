@@ -59,7 +59,9 @@ describe('InnoHelper', function () {
         inno = new IframeHelper();
     });
     afterEach(function () {
-        inno.pm.sendMessage.restore();
+        if (inno.pm.sendMessage.restore) {
+            inno.pm.sendMessage.restore();
+        }
         inno = null;
     });
 
@@ -68,9 +70,33 @@ describe('InnoHelper', function () {
             return callback(true, fixtures);
         });
         inno.onReady(function () {
+            var spy = sinon.spy();
+            inno.onReady(spy);
+            assert(spy.called, 'onReady callback should be called immediately');
             done();
         });
     });
+
+    it('should not crash if onReady callback is not a function', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.onReady(false);
+        inno.onReady(function () {
+            done();
+        });
+    });
+
+    /* TODO how to cover, test does not work
+    it('should throw error if can not get current data', function (done) {
+        assert.throw(function () {
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(false, 'some error');
+            });
+            done();
+        }, /some error/);
+    });
+    */
 
     it('can be get current data', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
@@ -84,6 +110,28 @@ describe('InnoHelper', function () {
             assert.deepEqual(inno.getCurrentSection(), fixtures.section, 'wrong section');
             assert.deepEqual(inno.getSections(), fixtures.sections, 'wrong sections');
             done();
+        });
+    });
+
+    it('can be get profile schema', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.onReady(function () {
+            inno.pm.sendMessage.restore();
+            sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+                return callback(true, fixtures.profileSchema);
+            });
+            inno.getProfileSchema(function (ok, data) {
+                assert.deepEqual(data, fixtures.profileSchema);
+                assert.ok(inno.pm.sendMessage.calledOnce);
+
+                inno.getProfileSchema(function (ok, data) {
+                    assert.deepEqual(data, fixtures.profileSchema);
+                    assert.ok(inno.pm.sendMessage.calledOnce);
+                    done();
+                });
+            });
         });
     });
 
@@ -151,9 +199,10 @@ describe('InnoHelper', function () {
         });
     });
 
+    // methods without arguments
     var methodsPart1 = ['getProperties', 'getWidgetSettings', 'removeProperties', 'getEventListeners', 'getRules', 'getSectionsFullList'];
 
-    methodsPart1.map(function (item) {
+    methodsPart1.forEach(function (item) {
         it('can be use ' + item, function (done) {
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
                 return callback(true, fixtures);
@@ -166,9 +215,10 @@ describe('InnoHelper', function () {
         });
     });
 
+    // methods with 1 argument
     var methodsPart2 = ['setProperties', 'setWidgetSettings', 'getProperty', 'removeProperty', 'removeEventListener', 'addEventListener', 'setRules', 'setRules', 'addLogMessage'];
 
-    methodsPart2.map(function (item) {
+    methodsPart2.forEach(function (item) {
         it('can be use ' + item, function (done) {
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
                 return callback(true, fixtures);
@@ -180,4 +230,51 @@ describe('InnoHelper', function () {
             });
         });
     });
+
+    it('should set property', function (done) {
+        sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
+            return callback(true, fixtures);
+        });
+        inno.setProperty('propName', 'propValue', function (ok, data) {
+            assert.strictEqual(ok, true);
+            assert.strictEqual(typeof data, 'object');
+            done();
+        });
+    });
+
+    it('should not set property and return error', function (done) {
+        inno.setProperty(null, 'propValue', function (ok, data) {
+            assert.isNotOk(ok);
+            assert.strictEqual(data, 'Property is undefined');
+            done();
+        });
+    });
+
+    it('should not remove property and return error', function (done) {
+        inno.removeProperty(null, function (ok, data) {
+            assert.isNotOk(ok);
+            assert.strictEqual(data, 'Property is undefined');
+            done();
+        });
+    });
+
+    it('should make request for addScreenMessage', function () {
+        var type = 'myType',
+            message = 'myMessage';
+
+        sinon.stub(inno, 'request');
+
+        inno.addScreenMessage(message, type);
+        inno.request.calledWith('screen.message', {type: type, message: message});
+        inno.request.restore();
+    });
+
+    it('should make request for sendIsReady', function () {
+        sinon.stub(inno, 'request');
+
+        inno.sendIsReady();
+        inno.request.calledWith('iframe.status;update');
+        inno.request.restore();
+    });
+
 });

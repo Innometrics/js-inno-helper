@@ -11,6 +11,7 @@
     "start": "gulp",
     "test": "npm run test-local",
     "test-local": "gulp test:local",
+    "test-local-manual": "gulp test:local-manual",
     "test-remote": "gulp test:remote"
   },
   "dependencies": {},
