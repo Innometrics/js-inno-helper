@@ -134,9 +134,16 @@ describe('PostMessenger', function () {
         it('should throw error if no link to parent window', function () {
             var parent = window.parent;
             window.parent = null;
-            assert.throws(function () {
-                pm.send('some message');
-            }, 'This page must be run in iframe.');
+
+            if (!window.parent) {
+                assert.throws(function () {
+                    pm.send('some message');
+                }, 'This page must be run in iframe.');
+            } else {
+                assert.ok(true, 'This test can not be implemented in this browser');
+            }
+
+
             window.parent = parent;
         });
 
@@ -144,24 +151,37 @@ describe('PostMessenger', function () {
             var top = window.top,
                 self = window.self;
 
-            window.self = window.top;
+            window.self = 1;
 
-            assert.throws(function () {
-                pm.send('some message');
-            }, 'This page must be run in iframe.');
+            if (window.self === 1) {
+                window.self = window.top;
+                assert.throws(function () {
+                    pm.send('some message');
+                }, 'This page must be run in iframe.');
+            } else {
+                assert.ok(true, 'This test can not be implemented in this browser');
+            }
 
             window.top = top;
             window.self = self;
         });
 
         it('should send postMessage to parent', function () {
-            var message = {my: 'message'};
-            sinon.stub(window.parent, 'postMessage');
+            var parent = window.parent,
+                postMessage = parent.postMessage,
+                spy = sinon.spy(),
+                message = {my: 'message'};
 
-            pm.send(message);
+            parent.postMessage = spy;
 
-            assert.ok(window.parent.postMessage.calledWith(message, '*'));
-            window.parent.postMessage.restore();
+            if (parent.postMessage !== postMessage) {
+                pm.send(message);
+                assert.ok(spy.calledWith(message, '*'));
+            } else {
+                assert.ok(true, 'This test can not be implemented in this browser');
+            }
+
+            parent.postMessage = postMessage;
         });
 
     });

@@ -66,9 +66,22 @@ PostMessenger.prototype = {
      * @private
      * @return {String} Generated unique ID
      */
-    getUniqId: function () {
-        return Math.round((Date.now() + window.performance.now()) * Math.random() * 1000);
-    },
+    getUniqId: (function () {
+        window.performance = (
+            (window.performance && window.performance.now) ?
+            window.performance :
+            {
+                offset: Date.now(),
+                now: function now(){
+                    return Date.now() - this.offset;
+                }
+            }
+        );
+
+        return function () {
+            return Math.round((+new Date() + window.performance.now()) * Math.random() * 1000);
+        };
+    })(),
 
     /* *
      * Adding callback to stack with uniq id and send message to parent frame
