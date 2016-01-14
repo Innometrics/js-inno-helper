@@ -54,8 +54,12 @@ gulp.task('scss', function () {
     return gulp.src(paths.scss)
         .pipe(filever().on('error', errorHandler))
         .pipe(sass().on('error', errorHandler))
+        .pipe(gulp.dest('dist'))
         .pipe(base64().on('error', errorHandler))
         .pipe(csso().on('error', errorHandler))
+        .pipe(rename({
+            extname: '.min.css'
+        }))
         .pipe(gulp.dest('dist'));
 });
 
