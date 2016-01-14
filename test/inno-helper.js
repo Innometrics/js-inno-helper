@@ -1,4 +1,4 @@
-/* global describe, it, chai, beforeEach, afterEach, IframeHelper, sinon */
+/* global describe, it, chai, beforeEach, afterEach, InnoHelper, sinon */
 var assert = chai.assert;
 
 var fixtures = {
@@ -56,12 +56,14 @@ var fixtures = {
 describe('InnoHelper', function () {
     var inno;
     beforeEach(function () {
-        inno = new IframeHelper();
+        inno = new InnoHelper();
     });
     afterEach(function () {
         if (inno.pm.sendMessage.restore) {
             inno.pm.sendMessage.restore();
         }
+
+        inno.clean();
         inno = null;
     });
 

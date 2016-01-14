@@ -11,6 +11,7 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
+var help = require('gulp-task-listing');
 
 function errorHandler (error) {
     return console.log(chalk.red(error.message));
@@ -86,4 +87,7 @@ gulp.task('watch', function () {
     gulp.watch(paths.scss, ['scss']);
 });
 
-gulp.task('default', ['js:normal', 'js:min', 'js:lint', 'scss']);
+gulp.task('build', ['js:normal', 'js:min', 'js:lint', 'scss']);
+
+gulp.task('help', help);
+gulp.task('default', help);

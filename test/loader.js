@@ -1,41 +1,23 @@
-/*global describe, beforeEach, it, chai, Loader, $, window */
+/*global describe, it,  chai,  $, InnoHelper */
 
 var assert = chai.assert;
 
 describe('Loader', function () {
+    var inno = new InnoHelper();
 
-    it('should be defined', function () {
-        assert('Loader' in window);
-    });
-
-    it('should not breaks code', function (done) {
-        var loader;
-
-        assert.doesNotThrow(function () {
-            Loader.hide();
-        }, 'function does not throw');
-
-        loader = $('#inno-loader');
-        assert.strictEqual(loader.length, 0);
-
-        done();
-    });
-
-    it('should be showen', function (done) {
-        var loader;
-        Loader.show();
-        loader = $('#inno-loader');
-        assert.ok(loader);
-        assert.strictEqual(loader.css('display'), 'block');
-        done();
-    });
-
-    it('should be hidden', function (done) {
-        Loader.show();
-        Loader.hide();
+    it('As default we use innometrics loader', function (done) {
         var loader = $('#inno-loader');
+        assert.ok(loader.length === 1);
+        done();
+    });
+
+    it('showLoader/hideLoader should be show/hide loader', function (done) {
+        var loader = $('#inno-loader');
+        assert.ok(loader, 'Element exists');
+        inno.showLoader();
+        assert.strictEqual(loader.css('display'), 'block');
+        inno.hideLoader();
         assert.strictEqual(loader.css('display'), 'none');
         done();
     });
-
 });
