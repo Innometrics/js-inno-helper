@@ -1,0 +1,31 @@
+[{
+    "os": "OS X",
+    "browser_version": "46.0",
+    "device": null,
+    "browser": "chrome",
+    "os_version": "Yosemite"
+},{
+    "os": "Windows",
+    "browser_version": "46.0",
+    "device": null,
+    "browser": "chrome",
+    "os_version": "10"
+},{
+    "os": "Windows",
+    "browser_version": "43.0",
+    "device": null,
+    "browser": "firefox",
+    "os_version": "10"
+},{
+    "os": "Windows",
+    "browser_version": "11",
+    "device": null,
+    "browser": "ie",
+    "os_version": "10"
+},{
+    "os": "Windows",
+    "browser_version": "12",
+    "device": null,
+    "browser": "edge",
+    "os_version": "10"
+}]

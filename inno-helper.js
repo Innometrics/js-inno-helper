@@ -360,7 +360,7 @@
             var self = this;
             this.request('gui.current.data', function (status, data) {
                 if (!status) {
-                    throw new Error(data);
+                    self.utils.fail(data);
                 } else {
                     self.currentData = data;
                     self.dispatchReadyEvent();
