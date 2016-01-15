@@ -1,4 +1,4 @@
-/* global describe, it, chai, before, beforeEach, afterEach, InnoHelper, sinon */
+/* global describe, it, chai, before, beforeEach, window, afterEach, InnoHelper, sinon */
 var assert = chai.assert;
 
 describe('PostMessenger', function () {
@@ -139,7 +139,6 @@ describe('PostMessenger', function () {
     });
 
     describe('data sending', function () {
-
         beforeEach(function () {
             inno = new InnoHelper();
             pm = inno.pm;
@@ -186,15 +185,17 @@ describe('PostMessenger', function () {
 
         it('should send postMessage to parent', function () {
             var parent = window.parent,
-                postMessage = parent.postMessage,
                 spy = sinon.spy(),
+                postMessage = parent.postMessage,
                 message = {my: 'message'};
 
             parent.postMessage = spy;
 
             if (parent.postMessage !== postMessage) {
                 pm.send(message);
-                assert.ok(spy.calledWith(message, '*'));
+                window.setTimeout(function () {
+                    assert.ok(spy.calledWith(message, '*'));
+                }, 100);
             } else {
                 assert.ok(true, 'This test can not be implemented in this browser');
             }

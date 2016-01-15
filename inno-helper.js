@@ -5,7 +5,7 @@
 (function () {
 
     /* *
-    * @class PostMessenger
+    * @class Utils
     * Class for different useful actions
     */
     var Utils = function (config) {
