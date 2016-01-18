@@ -1,9 +1,17 @@
-/*global describe, it,  chai,  $, InnoHelper */
+/*global describe, it, beforeEach, afterEach, chai,  $, InnoHelper */
 
 var assert = chai.assert;
 
 describe('Loader', function () {
-    var inno = new InnoHelper();
+    var inno;
+
+    beforeEach(function () {
+        inno = new InnoHelper();
+    });
+
+    afterEach(function () {
+        inno.clean();
+    });
 
     it('As default we use innometrics loader', function (done) {
         var loader = $('#inno-loader');

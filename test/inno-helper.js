@@ -58,13 +58,85 @@ describe('InnoHelper', function () {
     beforeEach(function () {
         inno = new InnoHelper();
     });
+
     afterEach(function () {
         if (inno.pm.sendMessage.restore) {
             inno.pm.sendMessage.restore();
         }
 
         inno.clean();
-        inno = null;
+    });
+
+    it('load helper without jQuery', function (done) {
+        inno.clean();
+        window._jQuery = window.jQuery;
+        window.jQuery = null;
+
+        assert.throws(function () {
+            inno = new InnoHelper();
+        }, 'You must load jQuery library before use helper.');
+
+        setTimeout(function () {
+            window.jQuery = window._jQuery;
+            done();
+        },100);
+    });
+
+    it('Two helpers on one page (2 loaders). It is wrong way.', function (done) {
+        var exInno = inno;
+        inno = new InnoHelper();
+
+        var loaders = window.jQuery('#inno-loader');
+        assert.ok(exInno !== inno && loaders.length === 1);
+        exInno.clean();
+        done();
+    });
+
+    it('use overrides for network functions', function (done) {
+        var url = "http://mirror.yandex.ru/freebsd/README.TXT",
+            match = new RegExp('^' + location.protocol + '//' + location.hostname),
+            need_run = 0;
+        inno.clean();
+
+        var finish = function () {
+            if (need_run === 0) {
+                inno.clean();
+                window.fetch = window.test_fetch_override;
+                XMLHttpRequest.prototype.open = XMLHttpRequest.prototype.test_open_override;
+                done();
+            }
+        };
+
+        if (window.fetch) {
+            need_run++;
+            window.test_fetch_override = window.fetch;
+            window.fetch = function (params) {
+                assert.ok(match.test(params.url));
+                need_run--;
+                finish();
+            };
+        }
+
+        need_run++;
+        XMLHttpRequest.prototype.test_open_override = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (requestType, url) {
+            assert.ok(match.test(url));
+            need_run--;
+            finish();
+        };
+
+        inno = new InnoHelper({
+            enableHttpsOverride: true
+        });
+
+        if (window.fetch) {
+            window.fetch(url);
+        }
+
+        window.jQuery.ajax({
+            method: 'get',
+            url: url
+        });
     });
 
     it('should be ready for use', function (done) {

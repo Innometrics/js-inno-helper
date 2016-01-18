@@ -28,6 +28,11 @@
 
     Utils.prototype = {
         appendLoader: function () {
+            var oldLoader = this.jQ('#inno-loader');
+            if (oldLoader.length > 0) {
+                this.warning('You must use only one innometrics loader on page');
+                oldLoader.remove();
+            }
             this.loader = this.jQ('<div id="inno-loader" style="display: none;"><div class="overlay"></div><div class="spinner"></div></div>');
             this.jQ('body').append(this.loader);
         },
@@ -35,6 +40,7 @@
         removeLoader: function () {
             if (this.loader) {
                 this.loader.remove();
+                this.loader = null;
             }
         },
 
@@ -59,7 +65,10 @@
         },
 
         getProxyUrlIfConnectionsIsUnsecure: function (url) {
-            var proxy = document.referrer + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
+            var referrer = document.referrer;
+            referrer = referrer.match(/^https?:\/\/[^\/]+/i); //get base
+
+            var proxy = referrer + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
 
             if (!url || !/^https?:/.test(url)) {
                 url = window.location.origin + (url.charAt(0) === '/' ? url : '/' + url);
@@ -71,9 +80,10 @@
         },
 
         xmlHttpRequestOverride: function () {
+            var self = this;
             XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
             XMLHttpRequest.prototype.open = function (requestType, url) {
-                url = this.getProxyUrlIfConnectionsIsUnsecure(url);
+                url = self.getProxyUrlIfConnectionsIsUnsecure(url);
                 return this._open.apply(this, arguments);
             };
 
@@ -87,26 +97,19 @@
         },
 
         fetchOverride: function () {
+            var self = this;
             if (window.fetch) {
                 window._fetch = window.fetch;
-                window.fetch = function (params) {
-                    if (window.Request && params instanceof Request) {
-                        var url = this.getProxyUrlIfConnectionsIsUnsecure(params.url);
-
-                        if (url !== params.url) {
-                            params = new Request(
-                                url, {
-                                    method: params.method,
-                                    headers: params.headers,
-                                    mode: params.mode
-                                }
-                            );
-                        }
-                    } else if (params.toString && params.toString() === params) {
-                        params = this.getProxyUrlIfConnectionsIsUnsecure(params);
+                window.fetch = function (url, params) {
+                    if (this.Request && url instanceof Request) {
+                        params = url;
+                        url = params.url;
                     }
 
-                    return window._fetch.apply(null, arguments);
+                    url = self.getProxyUrlIfConnectionsIsUnsecure(url);
+                    params = new Request(url, params);
+
+                    return this._fetch.call(null, params);
                 };
             } else {
                 return false;
