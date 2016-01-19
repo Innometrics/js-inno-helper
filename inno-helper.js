@@ -28,12 +28,11 @@
 
     Utils.prototype = {
         appendLoader: function () {
-            var oldLoader = this.jQ('#inno-loader');
+            var oldLoader = this.jQ('.innometrics-loader');
             if (oldLoader.length > 0) {
-                this.warning('You must use only one innometrics loader on page');
-                oldLoader.remove();
+                this.warning('We recommend use only one innometrics helper on one page.');
             }
-            this.loader = this.jQ('<div id="inno-loader" style="display: none;"><div class="overlay"></div><div class="spinner"></div></div>');
+            this.loader = this.jQ('<div class="innometrics-loader" style="display: none;"><div class="overlay"></div><div class="spinner"></div></div>');
             this.jQ('body').append(this.loader);
         },
 
@@ -663,7 +662,13 @@
         *     ]
         */
         getEventListeners: function (callback) {
-            this.request('app.event.listeners', callback);
+            this.request('app.event.listeners', function (error, listeners) {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    callback(error, listeners || []);
+                }
+            });
         },
 
         /*
@@ -848,7 +853,13 @@
          * @returns {undefined}
          */
         getRules: function (callback) {
-            this.request('app.rules', callback);
+            this.request('app.rules', function (error, data) {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    callback(error, data || []); // has no rules.
+                }
+            });
         },
 
         /**

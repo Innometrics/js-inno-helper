@@ -19,7 +19,7 @@ function errorHandler (error) {
 
 var paths = {
     js: ['inno-helper.js'],
-    scss: ['inno-theme.scss']
+    scss: ['inno-helper.scss']
 };
 
 function js () {
