@@ -102,7 +102,7 @@ describe('PostMessenger', function () {
 
             })}), 'myResult');
 
-            assert.ok(pm.messageStack['some id'].calledWith('success', 'my message'));
+            assert.ok(pm.messageStack['some id'].calledWith(null, 'my message'));
 
         });
     });

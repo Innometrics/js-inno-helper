@@ -66,7 +66,7 @@
 
         getProxyUrlIfConnectionsIsUnsecure: function (url) {
             var referrer = document.referrer;
-            referrer = referrer.match(/^https?:\/\/[^\/]+/i); //get base
+            referrer = referrer.match(/^https?:\/\/[^\/]+/i); // get base
 
             var proxy = referrer + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
 
@@ -151,7 +151,7 @@
         * @return {Boolean} Status of sending message
         */
         messageHandler: function (message) {
-            var data = {};
+            var data = {}, error = null, messageData = null;
             try {
                 data = JSON.parse(message.data);
             } catch (e) {
@@ -162,7 +162,13 @@
                 return false;
             }
 
-            return this.messageStack[data.requestId](data.success, data.message);
+            if (data.success) {
+                messageData = data.message;
+            } else {
+                error = new Error(data.message);
+            }
+
+            return this.messageStack[data.requestId](error, messageData, data);
         },
 
         /* *
@@ -361,8 +367,8 @@
          */
         loadCurrentData: function () {
             var self = this;
-            this.request('gui.current.data', function (status, data) {
-                if (!status) {
+            this.request('gui.current.data', function (error, data) {
+                if (error) {
                     self.utils.fail(data);
                 } else {
                     self.currentData = data;
@@ -716,9 +722,13 @@
             if (this.profileSchemaData) {
                 callback(true, this.profileSchemaData);
             } else {
-                this.request('app.profile.schema', function (status, data) {
-                    self.profileSchemaData = data;
-                    callback(status, data);
+                this.request('app.profile.schema', function (error, data) {
+                    if (error) {
+                        callback(error, null);
+                    } else {
+                        self.profileSchemaData = data;
+                        callback(error, data);
+                    }
                 });
             }
         },
@@ -734,23 +744,27 @@
                 var els = [];
                 var entries, key, m;
 
-                if (data && data.entries && data.entries instanceof Object) {
-                    entries = data.entries;
-                    for (key in entries) {
-                        if (entries[key].accepted) {
-                            m = key.match(regexp);
-                            if (m) {
-                                els.push(
-                                    m.slice(1).join('/')
-                                );
+                if (error) {
+                    callback(error, null);
+                } else {
+                    if (data && data.entries && data.entries instanceof Object) {
+                        entries = data.entries;
+                        for (key in entries) {
+                            if (entries[key].accepted) {
+                                m = key.match(regexp);
+                                if (m) {
+                                    els.push(
+                                        m.slice(1).join('/')
+                                    );
+                                }
                             }
                         }
                     }
-                }
 
-                if (callback instanceof Function) {
-                    els.sort();
-                    callback(els);
+                    if (callback instanceof Function) {
+                        els.sort();
+                        callback(error, els);
+                    }
                 }
             });
         },
@@ -775,14 +789,18 @@
         getProfileSchemaSessionDatas: function (appId, sectionId, callback) {
             var regStr = '^sessions.(' + appId + ').(' + sectionId + ').data.([^.]+)$';
             var regexp = new RegExp(regStr);
-            this.getProfileSchemaElementsByRegexp(regexp, function (els) {
-                if (callback instanceof Function) {
-                    els = els.map(function (el) {
-                        var parts = el.split('/');
-                        return parts[parts.length - 1];
-                    });
+            this.getProfileSchemaElementsByRegexp(regexp, function (error, els) {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    if (callback instanceof Function) {
+                        els = els.map(function (el) {
+                            var parts = el.split('/');
+                            return parts[parts.length - 1];
+                        });
 
-                    callback(els);
+                        callback(error, els);
+                    }
                 }
             });
         },
@@ -808,14 +826,18 @@
         getProfileSchemaEventDefinitionDatas: function (appId, sectionId, eventId, callback) {
             var regStr = '^sessions.(' + appId + ').(' + sectionId + ').events.(' + eventId + ').data.([^.]+)$';
             var regexp = new RegExp(regStr);
-            this.getProfileSchemaElementsByRegexp(regexp, function (els) {
-                if (callback instanceof Function) {
-                    els = els.map(function (el) {
-                        var parts = el.split('/');
-                        return parts[parts.length - 1];
-                    });
+            this.getProfileSchemaElementsByRegexp(regexp, function (error, els) {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    if (callback instanceof Function) {
+                        els = els.map(function (el) {
+                            var parts = el.split('/');
+                            return parts[parts.length - 1];
+                        });
 
-                    callback(els);
+                        callback(error, els);
+                    }
                 }
             });
         },
