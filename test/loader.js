@@ -14,7 +14,7 @@ describe('Loader', function () {
     });
 
     it('As default we use innometrics loader', function (done) {
-        assert.ok(jQuery.contains(document, inno.utils.loader[0]));
+        assert.ok($.contains(document, inno.utils.loader[0]));
         done();
     });
 

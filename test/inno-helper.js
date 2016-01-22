@@ -79,7 +79,7 @@ describe('InnoHelper', function () {
         setTimeout(function () {
             window.jQuery = window._jQuery;
             done();
-        },100);
+        }, 100);
     });
 
     it('use overrides for network functions', function (done) {
