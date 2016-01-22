@@ -14,13 +14,12 @@ describe('Loader', function () {
     });
 
     it('As default we use innometrics loader', function (done) {
-        var loader = $('.innometrics-loader');
-        assert.ok(loader.length === 1);
+        assert.ok(jQuery.contains(document, inno.utils.loader[0]));
         done();
     });
 
     it('showLoader/hideLoader should be show/hide loader', function (done) {
-        var loader = $('.innometrics-loader');
+        var loader = inno.utils.loader;
         assert.ok(loader, 'Element exists');
         inno.showLoader();
         assert.strictEqual(loader.css('display'), 'block');

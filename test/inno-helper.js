@@ -82,16 +82,6 @@ describe('InnoHelper', function () {
         },100);
     });
 
-    it('Two helpers on one page (2 loaders). It is wrong way.', function (done) {
-        var exInno = inno;
-        inno = new InnoHelper();
-
-        var loaders = window.jQuery('#inno-loader');
-        assert.ok(exInno !== inno && loaders.length === 1);
-        exInno.clean();
-        done();
-    });
-
     it('use overrides for network functions', function (done) {
         var url = "http://mirror.yandex.ru/freebsd/README.TXT",
             match = new RegExp('^' + location.protocol + '//' + location.hostname),

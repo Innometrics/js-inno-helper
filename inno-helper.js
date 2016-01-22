@@ -725,7 +725,7 @@
         getProfileSchema: function (callback) {
             var self = this;
             if (this.profileSchemaData) {
-                callback(true, this.profileSchemaData);
+                callback(null, this.profileSchemaData);
             } else {
                 this.request('app.profile.schema', function (error, data) {
                     if (error) {
