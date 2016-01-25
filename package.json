@@ -5,7 +5,7 @@
   "author": "",
   "contributors": [],
   "repository": {
-      "url": "https://github.com/Innometrics/js-inno-helper"
+    "url": "https://github.com/Innometrics/js-inno-helper"
   },
   "license": "MIT",
   "scripts": {
@@ -28,6 +28,7 @@
     "gulp-jshint": "^1.12.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.0",
+    "gulp-task-listing": "^1.0.1",
     "gulp-uglify": "^1.4.2",
     "gulp-version-filename": "^1.0.2",
     "istanbul": "^0.4.0",
