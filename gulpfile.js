@@ -11,6 +11,7 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
+var help = require('gulp-task-listing');
 
 function errorHandler (error) {
     return console.log(chalk.red(error.message));
@@ -18,7 +19,7 @@ function errorHandler (error) {
 
 var paths = {
     js: ['inno-helper.js'],
-    scss: ['inno-theme.scss']
+    scss: ['inno-helper.scss']
 };
 
 function js () {
@@ -54,8 +55,12 @@ gulp.task('scss', function () {
     return gulp.src(paths.scss)
         .pipe(filever().on('error', errorHandler))
         .pipe(sass().on('error', errorHandler))
+        .pipe(gulp.dest('dist'))
         .pipe(base64().on('error', errorHandler))
         .pipe(csso().on('error', errorHandler))
+        .pipe(rename({
+            extname: '.min.css'
+        }))
         .pipe(gulp.dest('dist'));
 });
 
@@ -82,4 +87,7 @@ gulp.task('watch', function () {
     gulp.watch(paths.scss, ['scss']);
 });
 
-gulp.task('default', ['js:normal', 'js:min', 'js:lint', 'scss']);
+gulp.task('build', ['js:normal', 'js:min', 'js:lint', 'scss']);
+
+gulp.task('help', help);
+gulp.task('default', help);

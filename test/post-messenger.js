@@ -1,13 +1,17 @@
-/* global describe, it, chai, beforeEach, afterEach, IframeHelper, sinon */
+/* global describe, it, chai, before, beforeEach, window, afterEach, InnoHelper, sinon */
 var assert = chai.assert;
 
 describe('PostMessenger', function () {
-
-    var pm;
-
     describe('for listen event "message"', function () {
         var addEventListener,
-            attachEvent;
+            attachEvent,
+            inno,
+            pm;
+
+        beforeEach(function () {
+            inno = new InnoHelper();
+            pm = inno.pm;
+        });
 
         before(function () {
             addEventListener = window.addEventListener;
@@ -15,6 +19,7 @@ describe('PostMessenger', function () {
         });
 
         afterEach(function () {
+            inno.clean();
             window.addEventListener = addEventListener;
             window.attachEvent = attachEvent;
         });
@@ -26,29 +31,39 @@ describe('PostMessenger', function () {
             window.attachEvent = window.attachEvent || function () {};
             sinon.spy(window, 'attachEvent');
 
-            pm = new PostMessenger();
+            inno.clean();
+            inno = new InnoHelper();
+
             assert.ok(window.addEventListener.calledOnce);
             assert.ok(window.addEventListener.calledWith('message'));
             assert.isNotOk(window.attachEvent.called);
         });
 
-        it('should use attachEvent', function () {
-            window.addEventListener = void(0);
+        /* it('should use attachEvent', function () {
+            window.addEventListener = undefined;
 
             window.attachEvent = function () {};
             sinon.stub(window, 'attachEvent');
 
-            pm = new PostMessenger();
+            inno.clean();
+            console.log(['Todo!',  window.name]);
+            inno = new InnoHelper();
             assert.ok(window.attachEvent.calledOnce);
             assert.ok(window.attachEvent.calledWith('onmessage'));
-        });
+        }); */
 
     });
 
     describe('message handling', function () {
+        var inno,pm;
 
         beforeEach(function () {
-            pm = new PostMessenger();
+            inno = new InnoHelper();
+            pm = inno.pm;
+        });
+
+        afterEach(function () {
+            inno.clean();
         });
 
         it('should return false if data is not JSON', function () {
@@ -87,15 +102,21 @@ describe('PostMessenger', function () {
 
             })}), 'myResult');
 
-            assert.ok(pm.messageStack['some id'].calledWith('success', 'my message'));
+            assert.ok(pm.messageStack['some id'].calledWith(null, 'my message'));
 
         });
     });
 
     describe('message sending', function () {
+        var inno,pm;
 
         beforeEach(function () {
-            pm = new PostMessenger();
+            inno = new InnoHelper();
+            pm = inno.pm;
+        });
+
+        afterEach(function () {
+            inno.clean();
         });
 
         it('should return false if data is not an object', function () {
@@ -126,9 +147,15 @@ describe('PostMessenger', function () {
     });
 
     describe('data sending', function () {
+        var inno,pm;
 
         beforeEach(function () {
-            pm = new PostMessenger();
+            inno = new InnoHelper();
+            pm = inno.pm;
+        });
+
+        afterEach(function () {
+            inno.clean();
         });
 
         it('should throw error if no link to parent window', function () {
@@ -168,15 +195,17 @@ describe('PostMessenger', function () {
 
         it('should send postMessage to parent', function () {
             var parent = window.parent,
-                postMessage = parent.postMessage,
                 spy = sinon.spy(),
+                postMessage = parent.postMessage,
                 message = {my: 'message'};
 
             parent.postMessage = spy;
 
             if (parent.postMessage !== postMessage) {
                 pm.send(message);
-                assert.ok(spy.calledWith(message, '*'));
+                window.setTimeout(function () {
+                    assert.ok(spy.calledWith(message, '*'));
+                }, 100);
             } else {
                 assert.ok(true, 'This test can not be implemented in this browser');
             }
@@ -187,12 +216,20 @@ describe('PostMessenger', function () {
     });
 
     describe('utils', function () {
+        var inno,pm;
+
+        beforeEach(function () {
+            inno = new InnoHelper();
+            pm = inno.pm;
+        });
+
+        afterEach(function () {
+            inno.clean();
+        });
 
         it('should generate uniq id', function () {
             var ids = {}, id,
                 l = 1000;
-
-            pm = new PostMessenger();
 
             while (l--) {
                 id = pm.getUniqId();

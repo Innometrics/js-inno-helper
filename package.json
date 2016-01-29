@@ -1,14 +1,16 @@
 {
   "name": "js-inno-helper",
-  "version": "0.0.2",
-  "private": true,
+  "version": "0.0.3",
+  "private": false,
   "author": "",
   "contributors": [],
-  "repository": "Innometrics/js-inno-helper",
+  "repository": {
+    "url": "https://github.com/Innometrics/js-inno-helper"
+  },
   "license": "MIT",
   "scripts": {
     "prepublish": "npm prune",
-    "start": "gulp",
+    "build": "gulp build",
     "test": "npm run test-local",
     "test-local": "gulp test:local",
     "test-local-manual": "gulp test:local-manual",
@@ -26,6 +28,7 @@
     "gulp-jshint": "^1.12.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.1.0",
+    "gulp-task-listing": "^1.0.1",
     "gulp-uglify": "^1.4.2",
     "gulp-version-filename": "^1.0.2",
     "istanbul": "^0.4.0",

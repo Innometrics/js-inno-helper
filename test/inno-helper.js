@@ -1,4 +1,4 @@
-/* global describe, it, chai, beforeEach, afterEach, IframeHelper, sinon */
+/* global describe, it, chai, beforeEach, afterEach, InnoHelper, sinon */
 var assert = chai.assert;
 
 var fixtures = {
@@ -56,19 +56,84 @@ var fixtures = {
 describe('InnoHelper', function () {
     var inno;
     beforeEach(function () {
-        inno = new IframeHelper();
+        inno = new InnoHelper();
     });
+
     afterEach(function () {
         if (inno.pm.sendMessage.restore) {
             inno.pm.sendMessage.restore();
         }
-        inno = null;
+
+        inno.clean();
+    });
+
+    it('load helper without jQuery', function (done) {
+        inno.clean();
+        window._jQuery = window.jQuery;
+        window.jQuery = null;
+
+        assert.throws(function () {
+            inno = new InnoHelper();
+        }, 'You must load jQuery library before use helper.');
+
+        setTimeout(function () {
+            window.jQuery = window._jQuery;
+            done();
+        }, 100);
+    });
+
+    it('use overrides for network functions', function (done) {
+        var url = "http://mirror.yandex.ru/freebsd/README.TXT",
+            match = new RegExp('^' + location.protocol + '//' + location.hostname),
+            need_run = 0;
+        inno.clean();
+
+        var finish = function () {
+            if (need_run === 0) {
+                inno.clean();
+                window.fetch = window.test_fetch_override;
+                XMLHttpRequest.prototype.open = XMLHttpRequest.prototype.test_open_override;
+                done();
+            }
+        };
+
+        if (window.fetch) {
+            need_run++;
+            window.test_fetch_override = window.fetch;
+            window.fetch = function (params) {
+                assert.ok(match.test(params.url));
+                need_run--;
+                finish();
+            };
+        }
+
+        need_run++;
+        XMLHttpRequest.prototype.test_open_override = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (requestType, url) {
+            assert.ok(match.test(url));
+            need_run--;
+            finish();
+        };
+
+        inno = new InnoHelper({
+            enableHttpsOverride: true
+        });
+
+        if (window.fetch) {
+            window.fetch(url);
+        }
+
+        window.jQuery.ajax({
+            method: 'get',
+            url: url
+        });
     });
 
     it('should be ready for use', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
+
         inno.onReady(function () {
             var spy = sinon.spy();
             inno.onReady(spy);
@@ -79,7 +144,7 @@ describe('InnoHelper', function () {
 
     it('should not crash if onReady callback is not a function', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(false);
         inno.onReady(function () {
@@ -100,7 +165,7 @@ describe('InnoHelper', function () {
 
     it('can be get current data', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             assert.deepEqual(inno.getCurrentUser(), fixtures.user, 'wrong user');
@@ -115,12 +180,12 @@ describe('InnoHelper', function () {
 
     it('can be get profile schema', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             inno.pm.sendMessage.restore();
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures.profileSchema);
+                return callback(null, fixtures.profileSchema);
             });
             inno.getProfileSchema(function (ok, data) {
                 assert.deepEqual(data, fixtures.profileSchema);
@@ -137,14 +202,14 @@ describe('InnoHelper', function () {
 
     it('can be get profile schema session datas', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             inno.pm.sendMessage.restore();
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures.profileSchema);
+                return callback(null, fixtures.profileSchema);
             });
-            inno.getProfileSchemaSessionDatas('android', 'mouse', function (data) {
+            inno.getProfileSchemaSessionDatas('android', 'mouse', function (error, data) {
                 assert.deepEqual(data, ['data1'], 'wrong profile schema session datas');
                 done();
             });
@@ -153,14 +218,14 @@ describe('InnoHelper', function () {
 
     it('can be get profile schema event definitions', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             inno.pm.sendMessage.restore();
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures.profileSchema);
+                return callback(null, fixtures.profileSchema);
             });
-            inno.getProfileSchemaEventDefinitions(function (data) {
+            inno.getProfileSchemaEventDefinitions(function (error, data) {
                 assert.deepEqual(data, ['android/mouse/load'], 'wrong profile schema event definitions');
                 done();
             });
@@ -169,14 +234,14 @@ describe('InnoHelper', function () {
 
     it('can be get profile schema attributes', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             inno.pm.sendMessage.restore();
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures.profileSchema);
+                return callback(null, fixtures.profileSchema);
             });
-            inno.getProfileSchemaAttributes(function (data) {
+            inno.getProfileSchemaAttributes(function (error, data) {
                 assert.deepEqual(data, ['android/mouse/data1'], 'wrong profile schema attributes');
                 done();
             });
@@ -185,14 +250,14 @@ describe('InnoHelper', function () {
 
     it('can be get profile schema event definition datas', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
         inno.onReady(function () {
             inno.pm.sendMessage.restore();
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures.profileSchema);
+                return callback(null, fixtures.profileSchema);
             });
-            inno.getProfileSchemaEventDefinitionDatas('android', 'mouse', 'load', function (data) {
+            inno.getProfileSchemaEventDefinitionDatas('android', 'mouse', 'load', function (error, data) {
                 assert.deepEqual(data, ['data1'], 'wrong profile schema event definition datas');
                 done();
             });
@@ -205,10 +270,10 @@ describe('InnoHelper', function () {
     methodsPart1.forEach(function (item) {
         it('can be use ' + item, function (done) {
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures);
+                return callback(null, fixtures);
             });
-            inno[item](function (ok, data) {
-                assert.strictEqual(ok, true);
+            inno[item](function (error, data) {
+                assert.strictEqual(error, null);
                 assert.strictEqual(typeof data, 'object');
                 done();
             });
@@ -221,10 +286,10 @@ describe('InnoHelper', function () {
     methodsPart2.forEach(function (item) {
         it('can be use ' + item, function (done) {
             sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-                return callback(true, fixtures);
+                return callback(null, fixtures);
             });
-            inno[item]('value', function (ok, data) {
-                assert.strictEqual(ok, true);
+            inno[item]('value', function (error, data) {
+                assert.strictEqual(error, null);
                 assert.strictEqual(typeof data, 'object');
                 done();
             });
@@ -233,10 +298,10 @@ describe('InnoHelper', function () {
 
     it('should set property', function (done) {
         sinon.stub(inno.pm, 'sendMessage', function (data, callback) {
-            return callback(true, fixtures);
+            return callback(null, fixtures);
         });
-        inno.setProperty('propName', 'propValue', function (ok, data) {
-            assert.strictEqual(ok, true);
+        inno.setProperty('propName', 'propValue', function (error, data) {
+            assert.strictEqual(error, null);
             assert.strictEqual(typeof data, 'object');
             done();
         });
