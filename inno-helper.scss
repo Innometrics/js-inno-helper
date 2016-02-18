@@ -1,4 +1,4 @@
-/* @version 0.0.3 */
+/* @version 0.0.4 */
 
 /* Spinner */
 .innometrics-loader {
@@ -30,6 +30,7 @@
     font-size: 13px;
     font-family: Arial, Verdana, Sans-Serif;
     color: #666666;
+    padding-top: 5px;
 
     h3 {
         color: #333;
@@ -49,6 +50,9 @@
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
+        h3 {
+            font-weight: normal;
+        }
     }
 
     .well-sm {
@@ -255,48 +259,76 @@
             -moz-box-shadow: none;
             box-shadow: none;
         }
-        /* BUTTONS */
 
-        button,
-        .btn {
-            color: #333;
-            background-repeat: repeat-x;
-            background-position: 0 0;
-            background-image: url("https://customer.innomdc.com/elygui/images/component/button/gray-big.png");
-            border: 1px solid #ccc;
-            border-bottom-color: #777;
-            height: 28px;
-            font-weight: bold;
-            font-size: 1.07em;
-            display: inline-block;
-            width: auto;
-            min-width: 75px;
-            padding: 0 8px;
-            line-height: 26px;
-            margin: 0px;
+    }
+
+    /* TABS */
+
+    .tabs.list-group {
+        border-left: 1px solid #ddd;
+        padding: 0;
+        .list-group-item {
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid white;
             border-radius: 0;
+            &:hover {
+                background-color: white;
+                border-left-color: #e0e0e0;
+            }
+            &.active {
+                color: #e56a3e;
+                background-color: white;
+                border-color: #e0e0e0;
+                border-left-color: #e56a3e;
+            }
         }
-        button:active,
-        .btn:active {
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-        }
-        button.btn-green,
-        .btn.btn-green {
-            color: white;
-            background-image: url("https://customer.innomdc.com/elygui/images/component/button/green.png");
-            border-color: #063;
-            border-bottom-color: #00592d;
-            text-shadow: 0px 1px #333;
-        }
-        button.btn-red,
-        .btn.btn-red {
-            background-image: url("https://customer.innomdc.com/elygui/images/component/button/red.png");
-            border-color: #661a00;
-            border-bottom-color: #7f2000;
-            color: #fff;
-            text-shadow: 0px 1px #333;
-        }
+    }
+    
+    /* BUTTONS */
+
+    .btn-group {
+        top: -4px;
+    }
+
+    button,
+    .btn {
+        color: #333;
+        background-repeat: repeat-x;
+        background-position: 0 0;
+        background-image: url("https://customer.innomdc.com/elygui/images/component/button/gray-big.png");
+        border: 1px solid #ccc;
+        border-bottom-color: #777;
+        height: 28px;
+        font-weight: bold;
+        font-size: 14px;
+        display: inline-block;
+        width: auto;
+        min-width: 75px;
+        padding: 0 8px;
+        line-height: 26px;
+        margin: 0px;
+        border-radius: 0;
+    }
+    button:active,
+    .btn:active {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+    button.btn-green,
+    .btn.btn-green {
+        color: white;
+        background-image: url("https://customer.innomdc.com/elygui/images/component/button/green.png");
+        border-color: #063;
+        border-bottom-color: #00592d;
+        text-shadow: 0px 1px #333;
+    }
+    button.btn-red,
+    .btn.btn-red {
+        background-image: url("https://customer.innomdc.com/elygui/images/component/button/red.png");
+        border-color: #661a00;
+        border-bottom-color: #7f2000;
+        color: #fff;
+        text-shadow: 0px 1px #333;
     }
 }
