@@ -293,14 +293,20 @@
 
         this.utils = new Utils(config);
 
+        this.initialDataRetry = 3;
         this.ready = false;
         this.readyStack = [];
         this.pm = new PostMessenger();
 
         this.currentData = null;
         this.profileSchemaData = null;
+        var self = this;
 
-        this.waitForLoadAndRun();
+        this.waitForLoadAndRun(function () {
+            setTimeout(function () {
+                self.loadCurrentData(self.initialDataRetry);
+            }, 0);
+        });
     };
 
     InnoHelper.prototype = {
@@ -330,11 +336,11 @@
          * Run all subscribed functions for "READY" event
          * @private
          */
-        dispatchReadyEvent: function () {
-            this.ready = true;
+        dispatchReadyEvent: function (error) {
+            this.ready = !error;
             this.readyStack.forEach(function (fn) {
                 if (fn instanceof Function) {
-                    fn();
+                    fn(error);
                 }
             });
         },
@@ -363,17 +369,26 @@
          * Load current data (user,group,bucket,app) from GUI
          * @private
          */
-        loadCurrentData: function () {
+        loadCurrentData: function (retry) {
             var self = this;
+
+            retry = retry || 0;
             this.request('gui.current.data', function (error, data) {
                 if (error) {
-                    self.utils.fail(data);
+                    if (retry > 0) {
+                        self.loadCurrentData(retry--);
+                    } else {
+                        self.utils.fail(data);
+                        self.dispatchReadyEvent(error);
+                    }
                 } else {
                     self.currentData = data;
                     self.dispatchReadyEvent();
                 }
             });
         },
+
+
 
         /**
          * Get current user data
@@ -930,17 +945,21 @@
             this.utils.clearHttpsOverrides();
         },
 
-        waitForLoadAndRun: function () {
-            var starter = this.loadCurrentData.bind(this);
+        waitForLoadAndRun: function (callback) {
+            if (document.readyState === 'complete') {
+                callback();
+                return;
+            }
+
             var startFn = function sfn () {
                 document.removeEventListener('DOMContentLoaded', sfn, false);
-                setTimeout(starter, 0);
+                callback();
             };
 
             var ieStartFn = function iesfn () {
                 if (document.readyState === 'complete') {
                     document.detachEvent('onreadystatechange', iesfn);
-                    setTimeout(starter, 0);
+                    callback();
                 }
             };
 
