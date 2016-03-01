@@ -1,4 +1,4 @@
-/* @version 0.0.3 */
+/* @version 0.0.4 */
 
 /* global Request */
 
@@ -12,17 +12,17 @@
         this.jQ = window.jQuery ? window.jQuery : false;
 
         if (!this.jQ) {
-            return this.fail('You must load jQuery library before use helper.');
-        }
+            this.fail('You must load jQuery library before use helper.');
+        } else {
+            if (config.useLoader) {
+                this.appendLoader();
+            }
 
-        if (config.useLoader) {
-            this.appendLoader();
-        }
-
-        if (config.enableHttpsOverride && window.location.protocol !== "https:") {
-            this.useHttpOverrides = true;
-            this.xmlHttpRequestOverride();
-            this.fetchOverride();
+            if (config.enableHttpsOverride && window.location.protocol !== "https:") {
+                this.useHttpOverrides = true;
+                this.xmlHttpRequestOverride();
+                this.fetchOverride();
+            }
         }
     };
 
@@ -65,9 +65,8 @@
 
         getProxyUrlIfConnectionsIsUnsecure: function (url) {
             var referrer = document.referrer;
-            referrer = referrer.match(/^https?:\/\/[^\/]+/i); // get base
-
-            var proxy = referrer + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
+            var matched = referrer.match(/^https?:\/\/[^\/]+/i); // get base
+            var proxy = matched[0] + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
 
             if (!url || !/^https?:/.test(url)) {
                 url = window.location.origin + (url.charAt(0) === '/' ? url : '/' + url);
@@ -301,7 +300,7 @@
         this.currentData = null;
         this.profileSchemaData = null;
 
-        setTimeout(this.loadCurrentData.bind(this), 0);
+        this.waitForLoadAndRun();
     };
 
     InnoHelper.prototype = {
@@ -929,6 +928,27 @@
             this.pm.clean();
             this.utils.removeLoader();
             this.utils.clearHttpsOverrides();
+        },
+
+        waitForLoadAndRun: function () {
+            var starter = this.loadCurrentData.bind(this);
+            var startFn = function sfn () {
+                document.removeEventListener('DOMContentLoaded', sfn, false);
+                setTimeout(starter, 0);
+            };
+
+            var ieStartFn = function iesfn () {
+                if (document.readyState === 'complete') {
+                    document.detachEvent('onreadystatechange', iesfn);
+                    setTimeout(starter, 0);
+                }
+            };
+
+            if (document.addEventListener) {
+                document.addEventListener('DOMContentLoaded', startFn);
+            } else {
+                document.attachEvent('onreadystatechange', ieStartFn);
+            }
         }
     };
 
