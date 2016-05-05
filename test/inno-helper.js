@@ -50,7 +50,9 @@ var fixtures = {
                 modifiedAt: 1422010460676
             }
         }
-    }
+    },
+
+    appKey: "qwerty123456"
 };
 
 describe('InnoHelper', function () {
@@ -174,6 +176,7 @@ describe('InnoHelper', function () {
             assert.deepEqual(inno.getCurrentApp(), fixtures.app, 'wrong app');
             assert.deepEqual(inno.getCurrentSection(), fixtures.section, 'wrong section');
             assert.deepEqual(inno.getSections(), fixtures.sections, 'wrong sections');
+            assert.deepEqual(inno.getCurrentAppKey(), fixtures.appKey, 'wrong app key');
             done();
         });
     });

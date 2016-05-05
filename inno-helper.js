@@ -1,5 +1,3 @@
-/* @version 0.0.4 */
-
 /* global Request */
 
 (function () {
@@ -388,6 +386,13 @@
             });
         },
 
+        /**
+         * Get current app key value
+         */
+
+        getCurrentAppKey: function () {
+            return this.currentData.appKey;
+        },
 
 
         /**
