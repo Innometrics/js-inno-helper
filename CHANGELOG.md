@@ -1,5 +1,9 @@
 # Frontend innometrics helper changelog
 
+## 0.0.6
+
+- Add numeric group id property
+
 ## 0.0.5
 
 - Add possible to request app_key value from GUI (getCurrentAppKey)

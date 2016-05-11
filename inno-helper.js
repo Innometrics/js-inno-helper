@@ -429,6 +429,7 @@
         *
         * @return {Object} Group data
         * @return {String} return.codename ID of the current group
+        * @return {Integer} return.id numeric ID (used in DataHandler) of the current group
         */
         getCurrentGroup: function () {
             return this.currentData.group;
