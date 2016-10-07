@@ -388,12 +388,15 @@
 
         /**
          * Get current app key value
+         * 
+         * You can use this key for custom requests to DataHandler
+         * 
+         * @return {String}
          */
 
         getCurrentAppKey: function () {
             return this.currentData.appKey;
         },
-
 
         /**
          * Get current user data
@@ -402,15 +405,17 @@
         *
         *     @example
         *     {
-        *         login: "john",
-        *         real_name: "John Doe",
-        *         email: "john.doe@somemail.com"
+        *         mail: "admin@swordfishinc.com",
+        *         login: "admin",
+        *         real_name: "Innometrics admin",
+        *         timezone: "Europe/Stockholm"
         *     }
         *
         * @return {Object} User data
         * @return {String} return.login Login of the user
         * @return {String} return.real_name Name of the user
         * @return {String} return.email Email of the user
+        * @return {String} return.timezone Timezone of the user
         *
         */
         getCurrentUser: function () {
@@ -424,6 +429,7 @@
         *
         *     @example
         *     {
+        *         id: 1222
         *         codename: "some-group-codename"
         *     }
         *
@@ -470,13 +476,13 @@
         *             }
         *         ],
         *         type: "custom",
-        *         url: "https://gentle-eyrie-8467.herokuapp.com/"
+        *         url: "https://example-app-1234.herokuapp.com/"
         *     }
         *
         * @return {Object} App data
         * @return {String} return.codename application ID
         * @return {String} return.display_name Name of the application
-        * @return {Array}  return.group Category of the application
+        * @return {Array}  return.group Categories of the application
         * @return {String} return.group.codename Category codename
         * @return {String} return.group.display_name Visible name of category
         * @return {String} return.type Type of the application
@@ -487,6 +493,14 @@
         },
 
         /**
+         * 
+         * Example of returning **section** object:
+         *
+         *    @example
+         *    {
+         *        codename: "section1",
+         *        display_name: "Section 1",
+         *    }
          * Returns selected section in current application
          * @return {Object} Section object
          * @return {String} return.codename ID of the section
@@ -497,6 +511,17 @@
         },
 
         /**
+         * 
+         * Example of returning array of **section** object:
+         *
+         *    @example
+         *    [
+         *        {
+         *            codename: "section1",
+         *            display_name: "Section 1",
+         *        }
+         *    ]
+         * 
          * Returns list of all available sections in current application
          * @return {Array} List of sections
          * @return {String} return.codename ID of the section
@@ -509,18 +534,22 @@
         /**
          * Get all properties by current app
          * @param {Function} callback Callback function to be called to get result of the request
-         * @param {Boolean} callback.status True if request succeed
-         * @param {Object} callback.data List of properties in current application
          *
-        * Example of **properties** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         key1: "value1",
-        *         key2: "value2"
-        *     }
-        *
-        */
+         * Example of Array of **properties** passed to callback:
+         *
+         *     @example
+         *     [
+         *         {
+         *             property: "key",
+         *             value: "value of the current property"
+         *         }
+         *     ]
+         *
+         * @function callback
+         * @param {Object} error Error/Null
+         * @param {Array} properties List of properties
+         * @returns undefined
+         */
         getProperties: function (callback) {
             this.request('app.settings', callback);
         },

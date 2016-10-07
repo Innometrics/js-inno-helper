@@ -3,6 +3,7 @@
 var base64 = require('gulp-base64');
 var chalk = require('chalk');
 var csso = require('gulp-csso');
+var JsDuck = require('gulp-jsduck');
 var filever = require('gulp-ver');
 var gulp = require('gulp');
 var jscs = require('gulp-jscs');
@@ -12,6 +13,8 @@ var sass = require('gulp-sass');
 var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
 var help = require('gulp-task-listing');
+
+var jsDuck = new JsDuck(["--out", "docs"]);
 
 function errorHandler (error) {
     return console.log(chalk.red(error.message));
@@ -85,6 +88,15 @@ gulp.task('test:remote', function (done) {
 gulp.task('watch', function () {
     gulp.watch(paths.js, ['js:normal', 'js:min', 'js:lint']);
     gulp.watch(paths.scss, ['scss']);
+});
+
+gulp.task('docs:generate', function () {
+    gulp.src(paths.js)
+        .pipe(jsDuck.doc());
+});
+
+gulp.task('docs:upload', function () {
+    //gulp.
 });
 
 gulp.task('build', ['js:normal', 'js:min', 'js:lint', 'scss']);
