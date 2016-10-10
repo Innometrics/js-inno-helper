@@ -1,6 +1,6 @@
 {
   "name": "js-inno-helper",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "author": "",
   "contributors": [],
@@ -14,7 +14,9 @@
     "test": "npm run test-local",
     "test-local": "gulp test:local",
     "test-local-manual": "gulp test:local-manual",
-    "test-remote": "gulp test:remote"
+    "test-remote": "gulp test:remote",
+    "generate-docs": "gulp docs:generate",
+    "upload-docs": "gulp docs:upload"
   },
   "dependencies": {},
   "devDependencies": {
@@ -31,6 +33,7 @@
     "gulp-task-listing": "^1.0.1",
     "gulp-uglify": "^1.4.2",
     "gulp-ver": "^0.1.0",
+    "gulp-jsduck": "*",
     "istanbul": "^0.4.0",
     "jquery": "^2.1.4",
     "karma": "^0.13.15",

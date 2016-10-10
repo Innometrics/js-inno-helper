@@ -388,31 +388,36 @@
 
         /**
          * Get current app key value
+         *
+         * You can use this key for custom requests to DataHandler
+         *
+         * @return {String}
          */
 
         getCurrentAppKey: function () {
             return this.currentData.appKey;
         },
 
-
         /**
          * Get current user data
          *
-        * Example of returning **user** object:
-        *
-        *     @example
-        *     {
-        *         login: "john",
-        *         real_name: "John Doe",
-        *         email: "john.doe@somemail.com"
-        *     }
-        *
-        * @return {Object} User data
-        * @return {String} return.login Login of the user
-        * @return {String} return.real_name Name of the user
-        * @return {String} return.email Email of the user
-        *
-        */
+         * Example of returning **user** object:
+         *
+         *     @example
+         *     {
+         *         mail: "admin@swordfishinc.com",
+         *         login: "admin",
+         *         real_name: "Innometrics admin",
+         *         timezone: "Europe/Stockholm"
+         *     }
+         *
+         * @return {Object} User data
+         * @return {String} return.login Login of the user
+         * @return {String} return.real_name Name of the user
+         * @return {String} return.email Email of the user
+         * @return {String} return.timezone Timezone of the user
+         *
+         */
         getCurrentUser: function () {
             return this.currentData.user;
         },
@@ -420,17 +425,18 @@
         /**
          * Get current group data
          *
-        * Example of returning **group** object:
-        *
-        *     @example
-        *     {
-        *         codename: "some-group-codename"
-        *     }
-        *
-        * @return {Object} Group data
-        * @return {String} return.codename ID of the current group
-        * @return {Integer} return.id numeric ID (used in DataHandler) of the current group
-        */
+         * Example of returning **group** object:
+         *
+         *     @example
+         *     {
+         *         id: 1222
+         *         codename: "some-group-codename"
+         *     }
+         *
+         * @return {Object} Group data
+         * @return {String} return.codename ID of the current group
+         * @return {Integer} return.id numeric ID (used in DataHandler) of the current group
+         */
         getCurrentGroup: function () {
             return this.currentData.group;
         },
@@ -438,18 +444,18 @@
         /**
          * Get current bucket data
          *
-        * Example of returning **bucket** object:
-        *
-        *     @example
-        *     {
-        *         codename: "my-bucket",
-        *         display_name: "My bucket"
-        *     }
-        *
-        * @return {Object} Bucket data:
-        * @return {String} return.codename ID of the bucket
-        * @return {String} return.display_name Visible name of the bucket
-        */
+         * Example of returning **bucket** object:
+         *
+         *     @example
+         *     {
+         *         codename: "my-bucket",
+         *         display_name: "My bucket"
+         *     }
+         *
+         * @return {Object} Bucket data:
+         * @return {String} return.codename ID of the bucket
+         * @return {String} return.display_name Visible name of the bucket
+         */
         getCurrentBucket: function () {
             return this.currentData.bucket;
         },
@@ -457,36 +463,44 @@
         /**
          * Get current application data
          *
-        * Example of returning **application** object:
-        *
-        *     @example
-        *     {
-        *         codename: "custom-app",
-        *         display_name: "Custom app",
-        *         group: [
-        *             {
-        *                  codename: "activate",
-        *                  display_name: "Share"
-        *             }
-        *         ],
-        *         type: "custom",
-        *         url: "https://gentle-eyrie-8467.herokuapp.com/"
-        *     }
-        *
-        * @return {Object} App data
-        * @return {String} return.codename application ID
-        * @return {String} return.display_name Name of the application
-        * @return {Array}  return.group Category of the application
-        * @return {String} return.group.codename Category codename
-        * @return {String} return.group.display_name Visible name of category
-        * @return {String} return.type Type of the application
-        * @return {String} return.url Entry point of application backend
-        */
+         * Example of returning **application** object:
+         *
+         *     @example
+         *     {
+         *         codename: "custom-app",
+         *         display_name: "Custom app",
+         *         group: [
+         *             {
+         *                  codename: "activate",
+         *                  display_name: "Share"
+         *             }
+         *         ],
+         *         type: "custom",
+         *         url: "https://example-app-1234.herokuapp.com/"
+         *     }
+         *
+         * @return {Object} App data
+         * @return {String} return.codename application ID
+         * @return {String} return.display_name Name of the application
+         * @return {Array}  return.group Categories of the application
+         * @return {String} return.group.codename Category codename
+         * @return {String} return.group.display_name Visible name of category
+         * @return {String} return.type Type of the application
+         * @return {String} return.url Entry point of application backend
+         */
         getCurrentApp: function () {
             return this.currentData.app;
         },
 
         /**
+         *
+         * Example of returning **section** object:
+         *
+         *    @example
+         *    {
+         *        codename: "section1",
+         *        display_name: "Section 1",
+         *    }
          * Returns selected section in current application
          * @return {Object} Section object
          * @return {String} return.codename ID of the section
@@ -497,6 +511,17 @@
         },
 
         /**
+         *
+         * Example of returning array of **section** object:
+         *
+         *    @example
+         *    [
+         *        {
+         *            codename: "section1",
+         *            display_name: "Section 1",
+         *        }
+         *    ]
+         *
          * Returns list of all available sections in current application
          * @return {Array} List of sections
          * @return {String} return.codename ID of the section
@@ -508,59 +533,48 @@
 
         /**
          * Get all properties by current app
-         * @param {Function} callback Callback function to be called to get result of the request
-         * @param {Boolean} callback.status True if request succeed
-         * @param {Object} callback.data List of properties in current application
          *
-        * Example of **properties** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         key1: "value1",
-        *         key2: "value2"
-        *     }
-        *
-        */
+         * Example of Array of **properties** passed to callback:
+         *
+         *     @example
+         *     [
+         *         {
+         *             property: "key",
+         *             value: "value of the current property"
+         *         }
+         *     ]
+         *
+         * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.properties List of properties (In case with error, properties will undefined)
+         * @returns {Undefined}
+         */
         getProperties: function (callback) {
             this.request('app.settings', callback);
         },
 
         /**
          * Set all properties by current app
-         * @param {Object} values Key-value object with properties to set
+         * @param {Object} values Key-value "Property" objects. (Example: {property: "example","value": 123})
          * @param {Function} callback Callback function to be called when request done
-         * @param {Boolean} callback.status True if request succeed
-         * @param {Object} callback.data List of properties in current application
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.data List of properties in current application (In case with error, properties will undefined)
+         * @returns {Undefined}
          *
-        * Example of **properties** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         key1: "value1",
-        *         key2: "value2"
-        *     }
-        *
-        */
+         */
         setProperties: function (values, callback) {
             this.request('app.settings;update', values, callback);
         },
 
         /**
          * Set all widget settings by current widget
-         * @param {Object} values Key-value object with widget settings to set
+         * @param {Object} values Key-value "Setting" objects. (Example: {property: "example","value": 123})
          * @param {Function} callback Callback function to be called when request done
-         * @param {Boolean} callback.status True if request succeed
-         * @param {Object} callback.data List of widget settings in current widget
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.data List of widget settings in current widget (In case with error, properties will undefined)
+         * @returns {Undefined}
          *
-        * Example of **widget settings** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         key1: "value1",
-        *         key2: "value2"
-        *     }
-        *
-        */
+         */
         setWidgetSettings: function (values, callback) {
             this.request('app.widget.settings;update', values, callback);
         },
@@ -568,17 +582,10 @@
         /**
          * Get all widget settings by current widget
          * @param {Function} callback Callback function to be called to get result of the request
-         * @param {Boolean} callback.status True if request succeed
-         * @param {Object} callback.data List of widget settings in current widget
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.data List of widget settings in current widget (In case with error, properties will undefined)
+         * @returns {Undefined}
          *
-        * Example of **widget settings** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         key1: "value1",
-        *         key2: "value2"
-        *     }
-        *
         */
         getWidgetSettings: function (callback) {
             this.request('app.widget.settings', callback);
@@ -587,7 +594,7 @@
         /**
          * Remove all properties in current app
          * @param {Function} callback Callback function to be called when request done
-         * @param {Boolean} callback.status True if request succeed
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          */
         removeProperties: function (callback) {
             this.request('app.settings;delete', callback);
@@ -597,20 +604,20 @@
          * Get property by name
          * @param {String} property Name of the property to get
          * @param {Function} callback Callback function to be called to get result of the request
-         * @param {Boolean} callback.status True if request succeed
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          * @param {Object} callback.data Object containing requested value
          * @param {String} callback.data.property Key of property
          * @param {String} callback.data.value Value of property
          *
-        * Example of **property** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         property: "property-key",
-        *         value: "property-value"
-        *     }
-        *
-        */
+         * Example of **property** object passed to callback:
+         *
+         *     @example
+         *     {
+         *         property: "property-key",
+         *         value: "property-value"
+         *     }
+         *
+         */
         getProperty: function (property, callback) {
             this.request('app.property', {
                 property: property
@@ -622,19 +629,19 @@
          * @param {String} property Name of the property to set
          * @param {Mixed} value Value of the property
          * @param {Function} callback Callback function to be called when request done
-         * @param {Boolean} callback.status True if request succeed
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          * @param {Object} callback.data Object containing set value
          * @param {String} callback.data.property Key of set property
          * @param {String} callback.data.value Value of set property
          *
-        * Example of **property** object passed to callback:
-        *
-        *     @example
-        *     {
-        *         property: "property-key",
-        *         value: "property-value"
-        *     }
-        *
+         * Example of **property** object passed to callback:
+         *
+         *     @example
+         *     {
+         *         property: "property-key",
+         *         value: "property-value"
+         *     }
+         *
     `    */
         setProperty: function (property, value, callback) {
             if (property) {
@@ -651,7 +658,7 @@
          * Remove property by name
          * @param {String} property Name of the property to remove
          * @param {Function} callback Callback function to be called when request done
-         * @param {Boolean} callback.status True if request succeed
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          */
         removeProperty: function (property, callback) {
             if (property) {
@@ -664,23 +671,23 @@
         /**
          * Get event listeners that subscribed by current app
          *
-        * @param {Function} callback Callback function to be called when request done
-        * @param {Boolean} callback.status True if request succeed
-        * @param {Array} callback.data List of events on which current application is subscribed. Each element is JSON object representing event definition.
-        *
-        * Example of **event list** array:
-        *
-        *     @example
-        *     [
-        *          {
-        *              id: "492",
-        *              definitionId: "event-a",
-        *              displayName: "Event A",
-        *              section: "first-section"
-        *              collectApp: "web",
-        *          }
-        *     ]
-        */
+         * @param {Function} callback Callback function to be called when request done
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.data List of events on which current application is subscribed. Each element is JSON object representing event definition.
+         *
+         * Example of **event list** array:
+         *
+         *     @example
+         *     [
+         *          {
+         *              id: "492",
+         *              definitionId: "event-a",
+         *              displayName: "Event A",
+         *              section: "first-section"
+         *              collectApp: "web",
+         *          }
+         *     ]
+         */
         getEventListeners: function (callback) {
             this.request('app.event.listeners', function (error, listeners) {
                 if (error) {
@@ -692,19 +699,21 @@
         },
 
         /*
-        * Remove event listener by codename
-        * @param {String} codename Codename of event listener
-        * @param {Function} callback
-        */
+         * Remove event listener by codename
+         * @param {String} codename Codename of event listener
+         * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         */
         removeEventListener: function (codename, callback) {
             this.request('app.event.listener;delete', callback);
         },
 
         /*
-        * Add event listener to app settings
-        * @param {Object} event Codename of event listener
-        * @param {Function} callback
-        */
+         * Add event listener to app settings
+         * @param {Object} event Codename of event listener
+         * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         */
         addEventListener: function (event, callback) {
             this.request('app.event.listener;create', event, callback);
         },
@@ -713,35 +722,37 @@
          * Get profile schema from GUI
          * @param {String} codename Codename of event listener
          * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.schema Profile schema. (In case with error, properties will undefined)
          *
-        * Example of **profile schema** json:
-        *
-        *     @example
-        *     {
-        *         "id" : "profile",
-        *         "entries" : {
-        *             "sessions.ios.section.events.eventTemp1224" : {
-        *                 "origin" : "APP",
-        *                 "type" : "OBJECT",
-        *                 "accepted" : true,
-        *                 "modifiedAt" : 1409583214446
-        *             },
-        *             "sessions.ios.ios.events.eventTemp1429.data.eventTempTestKey1429" : {
-        *                 "origin" : "APP",
-        *                 "type" : "STRING",
-        *                 "accepted" : true,
-        *                 "modifiedAt" : 1409586477569
-        *             },
-        *             "sessions.ios.ios.events.eventTemp909.data.eventTempTestKey909" : {
-        *                 "origin" : "APP",
-        *                 "type" : "STRING",
-        *                 "accepted" : true,
-        *                 "modifiedAt" : 1409586477559
-        *             }
-        *         }
-        *     }
-        *
-        */
+         * Example of **profile schema** json:
+         *
+         *     @example
+         *     {
+         *         "id" : "profile",
+         *         "entries" : {
+         *             "sessions.ios.section.events.eventTemp1224" : {
+         *                 "origin" : "APP",
+         *                 "type" : "OBJECT",
+         *                 "accepted" : true,
+         *                 "modifiedAt" : 1409583214446
+         *             },
+         *             "sessions.ios.ios.events.eventTemp1429.data.eventTempTestKey1429" : {
+         *                 "origin" : "APP",
+         *                 "type" : "STRING",
+         *                 "accepted" : true,
+         *                 "modifiedAt" : 1409586477569
+         *             },
+         *             "sessions.ios.ios.events.eventTemp909.data.eventTempTestKey909" : {
+         *                 "origin" : "APP",
+         *                 "type" : "STRING",
+         *                 "accepted" : true,
+         *                 "modifiedAt" : 1409586477559
+         *             }
+         *         }
+         *     }
+         *
+         */
         getProfileSchema: function (callback) {
             var self = this;
             if (this.profileSchemaData) {
@@ -870,6 +881,8 @@
         /**
          * Get app rules
          * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.rules Current app rules (In case with error, properties will undefined)
          * @returns {undefined}
          */
         getRules: function (callback) {
@@ -886,6 +899,8 @@
          * Set app rules
          * @param {Array} rules
          * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.rules Current app rules (In case with error, properties will undefined)
          * @returns {undefined}
          */
         setRules: function (rules, callback) {
@@ -893,9 +908,10 @@
         },
 
         /**
-         * Set app rules
-         * @param {Array} rules
+         * Get full list of sections
          * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
+         * @param {Array} callback.sections List of sections (In case with error, properties will undefined)
          * @returns {undefined}
          */
         getSectionsFullList: function (callback) {
@@ -906,6 +922,7 @@
          * Add log message to GUI
          * @param {String} message
          * @param {Function} callback
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          */
 
         addLogMessage: function (message, callback) {
@@ -915,6 +932,7 @@
         /**
          * Add screen feedback message to GUI
          * @param {Object} type and message
+         * @param {Object} callback.error Error/Null (Null if request was succeed, otherwise Error object)
          */
 
         addScreenMessage: function (message, type) {
@@ -945,11 +963,20 @@
             this.utils.hideLoader();
         },
 
+        /**
+         * @private
+         * @ignore
+         */
         clean: function () {
             this.pm.clean();
             this.utils.removeLoader();
             this.utils.clearHttpsOverrides();
         },
+
+        /**
+         * @private
+         * @ignore
+         */
 
         waitForLoadAndRun: function (callback) {
             if (document.readyState === 'complete') {
