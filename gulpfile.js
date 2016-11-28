@@ -1,5 +1,6 @@
 'use strict';
 
+var pack = require('./package.json');
 var base64 = require('gulp-base64');
 var chalk = require('chalk');
 var csso = require('gulp-csso');
@@ -14,7 +15,7 @@ var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
 var help = require('gulp-task-listing');
 
-var jsDuck = new JsDuck(["--out", "docs"]);
+var jsDuck = new JsDuck(["--output", "docs/" + pack.version, "--categories", "defines.json"]);
 
 function errorHandler (error) {
     return console.log(chalk.red(error.message));
@@ -96,7 +97,7 @@ gulp.task('docs:generate', function () {
 });
 
 gulp.task('docs:upload', function () {
-    //gulp.
+    // upload
 });
 
 gulp.task('build', ['js:normal', 'js:min', 'js:lint', 'scss']);
