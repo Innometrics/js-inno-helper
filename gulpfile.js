@@ -3,22 +3,20 @@
 var pack = require('./package.json');
 var base64 = require('gulp-base64');
 var chalk = require('chalk');
+var path = require('path');
 var csso = require('gulp-csso');
 var JsDuck = require('gulp-jsduck');
 var filever = require('gulp-ver');
 var gulp = require('gulp');
-var jscs = require('gulp-jscs');
-var jshint = require('gulp-jshint');
+var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var Server = require('karma').Server;
 var uglify = require('gulp-uglify');
 var help = require('gulp-task-listing');
 
-var jsDuck = new JsDuck(["--output", "docs/" + pack.version, "--categories", "defines.json"]);
-
 function errorHandler (error) {
-    return console.log(chalk.red(error.message));
+    return console.error(chalk.red(error.message));
 }
 
 var paths = {
@@ -29,16 +27,16 @@ var paths = {
 function js () {
     return gulp.src(paths.js)
         .pipe(filever().on('error', errorHandler))
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 }
 
 gulp.task('js:lint', function () {
     return gulp.src(paths.js)
-        .pipe(jscs())
-        .pipe(jscs.reporter())
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 });
 
 gulp.task('js:min', function () {
@@ -70,19 +68,19 @@ gulp.task('scss', function () {
 
 gulp.task('test:local', function (done) {
     new Server({
-        configFile: __dirname + '/config/karma.local.conf.js'
+        configFile: path.join(__dirname, 'config/karma.local.conf.js')
     }, done).start();
 });
 
 gulp.task('test:local-manual', function (done) {
     new Server({
-        configFile: __dirname + '/config/karma.local-manual.conf.js'
+        configFile: path.join(__dirname, 'config/karma.local-manual.conf.js')
     }, done).start();
 });
 
 gulp.task('test:remote', function (done) {
     new Server({
-        configFile: __dirname + '/config/karma.remote.conf.js'
+        configFile: path.join(__dirname, 'config/karma.remote.conf.js')
     }, done).start();
 });
 
@@ -92,8 +90,8 @@ gulp.task('watch', function () {
 });
 
 gulp.task('docs:generate', function () {
-    gulp.src(paths.js)
-        .pipe(jsDuck.doc());
+    var jsDuck = new JsDuck(["--output", "docs/" + pack.version, "--categories", "defines.json"]);
+    gulp.src(paths.js).pipe(jsDuck.doc());
 });
 
 gulp.task('docs:upload', function () {

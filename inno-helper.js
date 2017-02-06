@@ -1,7 +1,6 @@
 /* global Request */
 
 (function () {
-
     /* *
     * @class Utils
     * Class for different useful actions
@@ -63,13 +62,15 @@
 
         getProxyUrlIfConnectionsIsUnsecure: function (url) {
             var referrer = document.referrer;
-            var matched = referrer.match(/^https?:\/\/[^\/]+/i); // get base
+            // get base
+            var matched = referrer.match(/^https?:\/\/[^\/]+/i);
             var proxy = matched[0] + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
 
-            if (!url || !/^https?:/.test(url)) {
+            if (!url || !(/^https?:/).test(url)) {
                 url = window.location.origin + (url.charAt(0) === '/' ? url : '/' + url);
-            } else if (window !== window.parent) { // is it iframe?
-                url = (url && /^http:/.test(url)) ? proxy + encodeURIComponent(url) : url;
+            } else if (window !== window.parent) {
+                // is it iframe?
+                url = url && (/^http:/).test(url) ? proxy + encodeURIComponent(url) : url;
             }
 
             return url;
@@ -78,10 +79,12 @@
         xmlHttpRequestOverride: function () {
             var self = this;
             XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
+            /*eslint-disable no-unused-vars*/
             XMLHttpRequest.prototype.open = function (requestType, url) {
                 url = self.getProxyUrlIfConnectionsIsUnsecure(url);
                 return this._open.apply(this, arguments);
             };
+            /*eslint-enable no-unused-vars*/
 
             return XMLHttpRequest;
         },
@@ -173,21 +176,18 @@
         * @return {String} Generated unique ID
         */
         getUniqId: (function () {
-            window.performance = (
-                (window.performance && window.performance.now) ?
-                window.performance :
-                {
+            window.performance =
+                window.performance && window.performance.now ? window.performance : {
                     offset: Date.now(),
                     now: function () {
                         return Date.now() - this.offset;
                     }
-                }
-            );
+                };
 
             return function () {
                 return Math.round((+new Date() + window.performance.now()) * Math.random() * 1000);
             };
-        })(),
+        }()),
 
         /* *
         * Adding callback to stack with uniq id and send message to parent frame
@@ -324,7 +324,7 @@
          */
         addReadyListener: function (callback) {
             if (this.ready) {
-                callback();
+                return callback();
             } else {
                 this.readyStack.push(callback);
             }
@@ -650,7 +650,7 @@
                     value: value
                 }, callback);
             } else {
-                callback(false, 'Property is undefined');
+                return callback(false, 'Property is undefined');
             }
         },
 
@@ -664,7 +664,7 @@
             if (property) {
                 this.request('app.property;delete', property, callback);
             } else {
-                callback(false, 'Property is undefined');
+                return callback(false, 'Property is undefined');
             }
         },
 
@@ -691,9 +691,9 @@
         getEventListeners: function (callback) {
             this.request('app.event.listeners', function (error, listeners) {
                 if (error) {
-                    callback(error, null);
+                    return callback(error, null);
                 } else {
-                    callback(error, listeners || []);
+                    return callback(error, listeners || []);
                 }
             });
         },
@@ -734,20 +734,17 @@
          *             "sessions.ios.section.events.eventTemp1224" : {
          *                 "origin" : "APP",
          *                 "type" : "OBJECT",
-         *                 "accepted" : true,
-         *                 "modifiedAt" : 1409583214446
+         *                 "accepted" : true
          *             },
          *             "sessions.ios.ios.events.eventTemp1429.data.eventTempTestKey1429" : {
          *                 "origin" : "APP",
          *                 "type" : "STRING",
-         *                 "accepted" : true,
-         *                 "modifiedAt" : 1409586477569
+         *                 "accepted" : true
          *             },
          *             "sessions.ios.ios.events.eventTemp909.data.eventTempTestKey909" : {
          *                 "origin" : "APP",
          *                 "type" : "STRING",
-         *                 "accepted" : true,
-         *                 "modifiedAt" : 1409586477559
+         *                 "accepted" : true
          *             }
          *         }
          *     }
@@ -756,14 +753,14 @@
         getProfileSchema: function (callback) {
             var self = this;
             if (this.profileSchemaData) {
-                callback(null, this.profileSchemaData);
+                return callback(null, this.profileSchemaData);
             } else {
                 this.request('app.profile.schema', function (error, data) {
                     if (error) {
-                        callback(error, null);
+                        return callback(error, null);
                     } else {
                         self.profileSchemaData = data;
-                        callback(error, data);
+                        return callback(error, data);
                     }
                 });
             }
@@ -781,7 +778,7 @@
                 var entries, key, m;
 
                 if (error) {
-                    callback(error, null);
+                    return callback(error, null);
                 } else {
                     if (data && data.entries && data.entries instanceof Object) {
                         entries = data.entries;
@@ -799,7 +796,7 @@
 
                     if (callback instanceof Function) {
                         els.sort();
-                        callback(error, els);
+                        return callback(error, els);
                     }
                 }
             });
@@ -827,16 +824,14 @@
             var regexp = new RegExp(regStr);
             this.getProfileSchemaElementsByRegexp(regexp, function (error, els) {
                 if (error) {
-                    callback(error, null);
-                } else {
-                    if (callback instanceof Function) {
-                        els = els.map(function (el) {
-                            var parts = el.split('/');
-                            return parts[parts.length - 1];
-                        });
+                    return callback(error, null);
+                } else if (callback instanceof Function) {
+                    els = els.map(function (el) {
+                        var parts = el.split('/');
+                        return parts[parts.length - 1];
+                    });
 
-                        callback(error, els);
-                    }
+                    return callback(error, els);
                 }
             });
         },
@@ -864,16 +859,14 @@
             var regexp = new RegExp(regStr);
             this.getProfileSchemaElementsByRegexp(regexp, function (error, els) {
                 if (error) {
-                    callback(error, null);
-                } else {
-                    if (callback instanceof Function) {
-                        els = els.map(function (el) {
-                            var parts = el.split('/');
-                            return parts[parts.length - 1];
-                        });
+                    return callback(error, null);
+                } else if (callback instanceof Function) {
+                    els = els.map(function (el) {
+                        var parts = el.split('/');
+                        return parts[parts.length - 1];
+                    });
 
-                        callback(error, els);
-                    }
+                    return callback(error, els);
                 }
             });
         },
@@ -888,9 +881,10 @@
         getRules: function (callback) {
             this.request('app.rules', function (error, data) {
                 if (error) {
-                    callback(error, null);
+                    return callback(error, null);
                 } else {
-                    callback(error, data || []); // has no rules.
+                    // has no rules.
+                    return callback(error, data || []);
                 }
             });
         },
@@ -980,19 +974,18 @@
 
         waitForLoadAndRun: function (callback) {
             if (document.readyState === 'complete') {
-                callback();
-                return;
+                return callback();
             }
 
-            var startFn = function sfn () {
-                document.removeEventListener('DOMContentLoaded', sfn, false);
-                callback();
+            var startFn = function () {
+                document.removeEventListener('DOMContentLoaded', startFn, false);
+                return callback();
             };
 
-            var ieStartFn = function iesfn () {
+            var ieStartFn = function () {
                 if (document.readyState === 'complete') {
-                    document.detachEvent('onreadystatechange', iesfn);
-                    callback();
+                    document.detachEvent('onreadystatechange', ieStartFn);
+                    return callback();
                 }
             };
 
@@ -1005,4 +998,4 @@
     };
 
     window.InnoHelper = InnoHelper;
-})();
+}());

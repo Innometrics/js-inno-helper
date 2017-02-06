@@ -1,5 +1,9 @@
 # Frontend innometrics helper changelog
 
+## 0.0.8
+- Preparing for remove the modifiedAt properties.
+- Migrate from jshint + jscs to eslint.
+
 ## 0.0.6
 
 - Add numeric group id property
