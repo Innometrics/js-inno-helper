@@ -31,23 +31,19 @@ var fixtures = {
         entries: {
             'sessions.android.mouse.data.data1': {
                 origin: 'APP',
-                accepted: true,
-                modifiedAt: 1422010460676
+                accepted: true
             },
             'sessions.android.mouse.events.load': {
                 origin: 'APP',
-                accepted: true,
-                modifiedAt: 1422010460676
+                accepted: true
             },
             'attributes.android.mouse.data.data1': {
                 origin: 'APP',
-                accepted: true,
-                modifiedAt: 1422010460676
+                accepted: true
             },
             'sessions.android.mouse.events.load.data.data1': {
                 origin: 'APP',
-                accepted: true,
-                modifiedAt: 1422010460676
+                accepted: true
             }
         }
     },
@@ -87,11 +83,11 @@ describe('InnoHelper', function () {
     it('use overrides for network functions', function (done) {
         var url = "http://mirror.yandex.ru/freebsd/README.TXT",
             match = new RegExp('^' + location.protocol + '//' + location.hostname),
-            need_run = 0;
+            needRun = 0;
         inno.clean();
 
         var finish = function () {
-            if (need_run === 0) {
+            if (needRun === 0) {
                 inno.clean();
                 window.fetch = window.test_fetch_override;
                 XMLHttpRequest.prototype.open = XMLHttpRequest.prototype.test_open_override;
@@ -100,20 +96,20 @@ describe('InnoHelper', function () {
         };
 
         if (window.fetch) {
-            need_run++;
+            needRun++;
             window.test_fetch_override = window.fetch;
             window.fetch = function (params) {
                 assert.ok(match.test(params.url));
-                need_run--;
+                needRun--;
                 finish();
             };
         }
 
-        need_run++;
+        needRun++;
         XMLHttpRequest.prototype.test_open_override = XMLHttpRequest.prototype.open;
         XMLHttpRequest.prototype.open = function (requestType, url) {
             assert.ok(match.test(url));
-            need_run--;
+            needRun--;
             finish();
         };
 
@@ -333,7 +329,10 @@ describe('InnoHelper', function () {
         sinon.stub(inno, 'request');
 
         inno.addScreenMessage(message, type);
-        inno.request.calledWith('screen.message', {type: type, message: message});
+        inno.request.calledWith('screen.message', {
+            type: type,
+            message: message
+        });
         inno.request.restore();
     });
 
@@ -344,5 +343,4 @@ describe('InnoHelper', function () {
         inno.request.calledWith('iframe.status;update');
         inno.request.restore();
     });
-
 });
