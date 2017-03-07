@@ -48,7 +48,7 @@ var fixtures = {
         }
     },
 
-    appKey: "qwerty123456"
+    appKey: 'qwerty123456'
 };
 
 describe('InnoHelper', function () {
@@ -70,7 +70,7 @@ describe('InnoHelper', function () {
         window._jQuery = window.jQuery;
         window.jQuery = null;
 
-        assert.throws(function () {
+        assert['throws'](function () {
             inno = new InnoHelper();
         }, 'You must load jQuery library before use helper.');
 
@@ -81,7 +81,7 @@ describe('InnoHelper', function () {
     });
 
     it('use overrides for network functions', function (done) {
-        var url = "http://mirror.yandex.ru/freebsd/README.TXT",
+        var url = 'http://mirror.yandex.ru/freebsd/README.TXT',
             match = new RegExp('^' + location.protocol + '//' + location.hostname),
             needRun = 0;
         inno.clean();

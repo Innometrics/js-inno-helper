@@ -5,12 +5,10 @@ describe('PostMessenger', function () {
     describe('for listen event "message"', function () {
         var addEventListener,
             attachEvent,
-            inno,
-            pm;
+            inno;
 
         beforeEach(function () {
             inno = new InnoHelper();
-            pm = inno.pm;
         });
 
         before(function () {
@@ -38,24 +36,10 @@ describe('PostMessenger', function () {
             assert.ok(window.addEventListener.calledWith('message'));
             assert.isNotOk(window.attachEvent.called);
         });
-
-        /* it('should use attachEvent', function () {
-            window.addEventListener = undefined;
-
-            window.attachEvent = function () {};
-            sinon.stub(window, 'attachEvent');
-
-            inno.clean();
-            console.log(['Todo!',  window.name]);
-            inno = new InnoHelper();
-            assert.ok(window.attachEvent.calledOnce);
-            assert.ok(window.attachEvent.calledWith('onmessage'));
-        }); */
-
     });
 
     describe('message handling', function () {
-        var inno,pm;
+        var inno, pm;
 
         beforeEach(function () {
             inno = new InnoHelper();
@@ -69,24 +53,32 @@ describe('PostMessenger', function () {
         it('should return false if data is not JSON', function () {
             assert.strictEqual(pm.messageHandler(null), false);
             assert.strictEqual(pm.messageHandler('test'), false);
-            assert.strictEqual(pm.messageHandler({data: 'not json'}), false);
+            assert.strictEqual(pm.messageHandler({
+                data: 'not json'
+            }), false);
         });
 
         it('should return false if no data.requestId', function () {
-            assert.strictEqual(pm.messageHandler({data: JSON.stringify({})}), false);
+            assert.strictEqual(pm.messageHandler({
+                data: JSON.stringify({})
+            }), false);
         });
 
         it('should return false if no requestId in messageStack', function () {
-            assert.strictEqual(pm.messageHandler({data: JSON.stringify({
-                requestId: 'some id'
-            })}), false);
+            assert.strictEqual(pm.messageHandler({
+                data: JSON.stringify({
+                    requestId: 'some id'
+                })
+            }), false);
         });
 
         it('should return false if no requestId in messageStack', function () {
             pm.messageStack['some id'] = 'not a function';
-            assert.strictEqual(pm.messageHandler({data: JSON.stringify({
-                requestId: 'some id'
-            })}), false);
+            assert.strictEqual(pm.messageHandler({
+                data: JSON.stringify({
+                    requestId: 'some id'
+                })
+            }), false);
         });
 
         it('should return result from requestId function', function () {
@@ -95,20 +87,21 @@ describe('PostMessenger', function () {
                 return 'myResult';
             });
 
-            assert.strictEqual(pm.messageHandler({data: JSON.stringify({
-                requestId: 'some id',
-                success: 'success',
-                message: 'my message'
+            assert.strictEqual(pm.messageHandler({
+                data: JSON.stringify({
+                    requestId: 'some id',
+                    success: 'success',
+                    message: 'my message'
 
-            })}), 'myResult');
+                })
+            }), 'myResult');
 
             assert.ok(pm.messageStack['some id'].calledWith(null, 'my message'));
-
         });
     });
 
     describe('message sending', function () {
-        var inno,pm;
+        var inno, pm;
 
         beforeEach(function () {
             inno = new InnoHelper();
@@ -131,7 +124,9 @@ describe('PostMessenger', function () {
         });
 
         it('should send data', function () {
-            var data = {test: 1},
+            var data = {
+                    test: 1
+                },
                 callback = function () {};
 
             sinon.stub(pm, 'send', function () {
@@ -143,11 +138,10 @@ describe('PostMessenger', function () {
             assert.ok('requestId' in data);
             assert.strictEqual(pm.messageStack[data.requestId], callback);
         });
-
     });
 
     describe('data sending', function () {
-        var inno,pm;
+        var inno, pm;
 
         beforeEach(function () {
             inno = new InnoHelper();
@@ -163,13 +157,12 @@ describe('PostMessenger', function () {
             window.parent = null;
 
             if (!window.parent) {
-                assert.throws(function () {
+                assert['throws'](function () {
                     pm.send('some message');
                 }, 'This page must be run in iframe.');
             } else {
                 assert.ok(true, 'This test can not be implemented in this browser');
             }
-
 
             window.parent = parent;
         });
@@ -182,7 +175,7 @@ describe('PostMessenger', function () {
 
             if (window.self === 1) {
                 window.self = window.top;
-                assert.throws(function () {
+                assert['throws'](function () {
                     pm.send('some message');
                 }, 'This page must be run in iframe.');
             } else {
@@ -197,7 +190,9 @@ describe('PostMessenger', function () {
             var parent = window.parent,
                 spy = sinon.spy(),
                 postMessage = parent.postMessage,
-                message = {my: 'message'};
+                message = {
+                    my: 'message'
+                };
 
             parent.postMessage = spy;
 
@@ -212,11 +207,10 @@ describe('PostMessenger', function () {
 
             parent.postMessage = postMessage;
         });
-
     });
 
     describe('utils', function () {
-        var inno,pm;
+        var inno, pm;
 
         beforeEach(function () {
             inno = new InnoHelper();
@@ -237,7 +231,5 @@ describe('PostMessenger', function () {
                 ids[id] = true;
             }
         });
-
     });
-
 });
