@@ -977,6 +977,11 @@
                 return callback();
             }
 
+            if (document.readyState === 'interactive') {
+                //in interactive ready over addEventListeners('DOMContentLoaded') doesn't work. Chrome 54.0.2840.71. FF 48.
+                return window.setTimeout(this.waitForLoadAndRun.bind(this, callback), 100);
+            }
+
             var startFn = function () {
                 document.removeEventListener('DOMContentLoaded', startFn, false);
                 return callback();
