@@ -90,7 +90,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('docs:generate', function () {
-    var jsDuck = new JsDuck(["--output", "docs/" + pack.version, "--categories", "defines.json"]);
+    var jsDuck = new JsDuck(['--output', 'docs/' + pack.version, '--categories', 'defines.json']);
     gulp.src(paths.js).pipe(jsDuck.doc());
 });
 

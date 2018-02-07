@@ -1,3 +1,5 @@
+/* eslint no-sync: "off", no-process-env: "off" */
+
 var fs = require('fs');
 var list = fs.readFileSync('browsers.json');
 var launchers = {};

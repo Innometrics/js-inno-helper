@@ -15,7 +15,7 @@
                 this.appendLoader();
             }
 
-            if (config.enableHttpsOverride && window.location.protocol !== "https:") {
+            if (config.enableHttpsOverride && window.location.protocol !== 'https:') {
                 this.useHttpOverrides = true;
                 this.xmlHttpRequestOverride();
                 this.fetchOverride();
@@ -64,7 +64,7 @@
             var referrer = document.referrer;
             // get base
             var matched = referrer.match(/^https?:\/\/[^\/]+/i);
-            var proxy = matched[0] + '/' + (window.elyProxyUrlForCustomApps || "app_custom_proxy?url=");
+            var proxy = matched[0] + '/' + (window.elyProxyUrlForCustomApps || 'app_custom_proxy?url=');
 
             if (!url || !(/^https?:/).test(url)) {
                 url = window.location.origin + (url.charAt(0) === '/' ? url : '/' + url);
@@ -285,7 +285,7 @@
         config = config || {};
 
         // As default we use innometrics loader. You can set useLoader to false for use custom loader.
-        if (!("useLoader" in config)) {
+        if (!('useLoader' in config)) {
             config.useLoader = true;
         }
 

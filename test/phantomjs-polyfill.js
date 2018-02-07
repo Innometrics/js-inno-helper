@@ -1,11 +1,13 @@
+/* eslint no-extend-native: "off" */
+
 if (typeof Function.prototype.bind !== 'function') {
-    Function.prototype.bind = function bind (obj) {
+    Function.prototype.bind = function (obj) {
         var args = Array.prototype.slice.call(arguments, 1),
             self = this,
             Nop = function () {},
             bound = function () {
                 return self.apply(
-                    this instanceof Nop ? this : (obj || {}), args.concat(
+                    this instanceof Nop ? this : obj || {}, args.concat(
                         Array.prototype.slice.call(arguments)
                     )
                 );
